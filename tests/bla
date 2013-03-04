@@ -1,0 +1,44 @@
+
+Notice: Constant MUMVC_SITE_PREFIX already defined in /var/www/mumvc.dev/modules/MuMVC/Root.php on line 9
+
+Call Stack:
+    0.0005     119492   1. {main}() /usr/local/bin/phpunit:0
+    0.0095     348936   2. PHPUnit_TextUI_Command::main() /usr/local/bin/phpunit:46
+    0.0095     352028   3. PHPUnit_TextUI_Command->run() /usr/local/lib/php/PHPUnit/TextUI/Command.php:129
+    0.0096     352244   4. PHPUnit_TextUI_Command->handleArguments() /usr/local/lib/php/PHPUnit/TextUI/Command.php:138
+    0.0271     597084   5. PHPUnit_TextUI_Command->handleBootstrap() /usr/local/lib/php/PHPUnit/TextUI/Command.php:606
+    0.0277     602904   6. PHPUnit_Util_Fileloader::checkAndLoad() /usr/local/lib/php/PHPUnit/TextUI/Command.php:778
+    0.0278     603012   7. PHPUnit_Util_Fileloader::load() /usr/local/lib/php/PHPUnit/Util/Fileloader.php:76
+    0.0279     604660   8. include_once('/var/www/mumvc.dev/tests/bootstrap.php') /usr/local/lib/php/PHPUnit/Util/Fileloader.php:92
+    0.0285     615520   9. require_once('/var/www/mumvc.dev/modules/MuMVC/Root.php') /var/www/mumvc.dev/tests/bootstrap.php:4
+    0.0285     615752  10. define() /var/www/mumvc.dev/modules/MuMVC/Root.php:9
+
+PHPUnit 3.7.14 by Sebastian Bergmann.
+
+Configuration read from /var/www/mumvc.dev/tests/phpunit.xml.dist
+
+...[41;37mF[0m[31;1mE[0m
+
+Time: 0 seconds, Memory: 2.25Mb
+
+There was 1 error:
+
+1) MuMVC\Tests::testTemplate
+Undefined variable: bloc
+
+/var/www/mumvc.dev/modules/MuMVC/Template.php:45
+/var/www/mumvc.dev/tests/Tests.php:26
+
+--
+
+
+There was 1 failure:
+
+1) MuMVC\Tests::testCaching
+APC is not enabled!
+
+/var/www/mumvc.dev/tests/Tests.php:21
+
+[37;41m[2KFAILURES!
+[0m[37;41m[2KTests: 5, Assertions: 2, Failures: 1, Errors: 1.
+[0m[2K
