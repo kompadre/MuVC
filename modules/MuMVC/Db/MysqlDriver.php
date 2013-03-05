@@ -6,6 +6,8 @@
  
 namespace MuMVC\Db;
 
+use Exception;
+
 class MysqlDriver implements IDbDriver {
 	private $connection;
 	private $queryStack = array();
@@ -15,10 +17,10 @@ class MysqlDriver implements IDbDriver {
 				$params['server'], $params['username'], $params['password']
 		);
 		if (!$this->connection) {
-			throw new Exception('Cannot connect to DB with <b>' . $params['username'] . '</b>');
+			throw new \Exception('Cannot connect to DB with <b>' . $params['username'] . '</b>');
 		}
 		if (! mysql_select_db($params['dbname'], $this->connection) ) {
-			throw new Exception('Cannot select DB <b>' . $params['dbname'] . '</b>');
+			throw new \Exception('Cannot select DB <b>' . $params['dbname'] . '</b>');
 		}
 	}
 	public function query($query) {
