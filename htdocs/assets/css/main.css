@@ -4,3 +4,6 @@ h1 {
 .box {
 	padding: 10px; border-radius: 10px; margin: auto; width: 800px; height: 500px; background-color: white;
 }
+.footer {
+	padding: 10px; border-radius: 10px; margin: auto; margin-top: 10px; width: 800px; height: 30pt; background-color: white;
+}

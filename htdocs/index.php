@@ -23,6 +23,7 @@ list($micro, $time) = explode(' ', microtime());
 $mt2 = $micro + ($time%100);
 if ($mt2 < $mt1)
 	$mt2 += 100;
-
+echo '<div class="footer">';
 echo "Executed in " . ($mt2 - $mt1) . "<br>";
 echo "Memory peak usage: " . memory_get_peak_usage();
+echo '</div>';
