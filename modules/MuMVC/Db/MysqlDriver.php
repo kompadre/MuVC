@@ -6,8 +6,6 @@
  
 namespace MuMVC\Db;
 
-use Exception;
-
 class MysqlDriver implements IDbDriver {
 	private $connection;
 	private $queryStack = array();
@@ -26,6 +24,11 @@ class MysqlDriver implements IDbDriver {
 	public function query($query) {
 		array_push($this->queryStack, 
 			mysql_query($query, $this->connection));
+		$error = mysql_error();
+		if (!empty ($error)) {
+			array_pop($this->queryStack);
+			throw new \Exception('There was an error in last query: <br><pre>'.$error.'</pre>');
+		}
 	}
 	public function fetchAssoc() {
 		$qh = array_pop($this->queryStack);
