@@ -27,9 +27,14 @@ class Controller extends Root implements ICacheable {
 	}
 	public function dispatch($route) {
 		try {
+			// To let actual Controller decide wether to cache or not
 			$actionControllerString = 'Application\\Controller\\' . ucfirst($route['controller']);
 			$actionController = new $actionControllerString();
 			$actionController->before();
+			if (Registry::get('caching') && ($cachedContent = Cache::instance()->fetchContent($route)) ) {
+				echo $cachedContent;
+				return;
+			}
 			$actionMethod = $route['action'] . 'Action';
 			if (method_exists($actionController, $actionMethod)) {
 				$actionController->$actionMethod();
@@ -37,9 +42,13 @@ class Controller extends Root implements ICacheable {
 			else {
 				$actionController->defaultAction($actionMethod);
 			}
-			$actionController->after();
+			$content = $actionController->after();
+			if (Registry::instance()->get('caching')) {			
+				Cache::instance()->saveContent($route, $content);
+			}
+			echo $content;
 		} catch (Exception $e) {
-			
+			echo $e->getMessage();
 		}
 	}
 }

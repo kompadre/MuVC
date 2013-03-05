@@ -48,9 +48,11 @@ class Cache extends Root
 		Controller::instance()->helloWorld();
 	}
 	public function saveContent($route, $content, $ttl=null) {
-		return $this->store(implode(':', $route), $content, $ttl);
+		echo "Saving " . implode('_', $route) . "<br>";
+		return $this->driver->store(implode('_', $route), $content, $ttl);
 	}
 	public function fetchContent($route) {
-		return $this->fetch(implode(':', $route));
+		echo "Fetching " . implode('_', $route) . "<br>";
+		return $this->driver->fetch(implode('_', $route));
 	}
 }

@@ -20,13 +20,15 @@ abstract class ActionController {
 		}
 		$this->action = $action;
 	}
-	protected function findTemplate() {
-		$controllerName = $this->controller;
-		if (($pos = strrpos($controllerName, '\\')) !== false) {
-			$controllerName = substr($controllerName, $pos+1);
+	protected function findTemplate($templatePath=null) {
+		if ($templatePath == null) {
+			$controllerName = $this->controller;
+			if (($pos = strrpos($controllerName, '\\')) !== false) {
+				$controllerName = substr($controllerName, $pos+1);
+			}
+			$controllerName = strtolower($controllerName);
+			$templatePath = APP_PATH . '/views/' . $controllerName . '/' . $this->action . '.tpl';
 		}
-		$controllerName = strtolower($controllerName);
-		$templatePath = APP_PATH . '/views/' . $controllerName . '/' . $this->action . '.tpl';
 		if (file_exists($templatePath)) {
 			return $templatePath;
 		}
@@ -39,6 +41,6 @@ abstract class ActionController {
 	public function after() {
 		$tpl_layout = new Template($this->layout);
 		$tpl_layout->asigna('CONTENT', $this->template->render());
-		echo $tpl_layout->render();
+		return $tpl_layout->render();
 	}
 }

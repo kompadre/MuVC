@@ -17,7 +17,9 @@ class MysqlDriver {
 		if (!$this->connection) {
 			throw new Exception('Cannot connect to DB with <b>' . $params['username'] . '</b>');
 		}
-		mysql_select_db($params['dbname'], $this->connection);
+		if (! mysql_select_db($params['dbname'], $this->connection) ) {
+			throw new Exception('Cannot select DB <b>' . $params['dbname'] . '</b>');
+		}
 	}
 	public function query($query) {
 		array_push($this->queryStack, 

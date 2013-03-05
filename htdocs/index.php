@@ -2,22 +2,24 @@
 list($micro, $time) = explode(' ', microtime());
 $mt1 = $micro + ($time%100);
 
-
 require_once __DIR__ . '/../modules/MuMVC/Root.php';
-
 use MuMVC\Route;
 use MuMVC\Cache;
 use MuMVC\Controller;
+use MuMVC\Registry;
+
+Registry::instance()->set('caching', true);
 
 $route = new Route();
 $parsedRoute = $route->parse();
 
-if (!Cache::instance()->fetchContent($parsedRoute)) {
-	Cache::instance()->saveContent(
-		$parsedRoute, 
-		$content = Controller::instance()->dispatch($parsedRoute)
-	);
-	echo $content;
+
+try {
+	Controller::instance()->dispatch($parsedRoute);	
+} catch (Exception $e) {
+	if (404 == $e->getCode()) {
+		echo "<h1>404 Page not found!</h1><br>";
+	}
 }
 
 list($micro, $time) = explode(' ', microtime());

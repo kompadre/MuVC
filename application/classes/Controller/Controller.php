@@ -7,8 +7,9 @@
 namespace Application\Controller;
 use \MuMVC\ActionController;
 use \Application\Model\Album;
+use \MuMVC\Registry;
 
-class Controller extends ActionController { 
+class Controller extends ActionController {
 	public function indexAction() {
 		$album = new Album();
 		$album->query("SELECT * FROM album WHERE 1");
@@ -16,9 +17,9 @@ class Controller extends ActionController {
 		while ($row = $album->fetchAssoc()) {
 			$template->asigna('artist', $row['artist']);
 			$template->asigna('title',  $row['title']);
-			$template->asigna('color', sprintf("%06x", mt_rand()));
+			$template->asigna('color', sprintf("%06x", mt_rand(0,0xFFFFFF)));
 			$template->parse('row');
-		}
+		}		
 		$template->asigna('title', 'My first page in MuMVC');
 	}
 	public function defaultAction($action=null) {

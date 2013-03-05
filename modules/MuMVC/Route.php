@@ -52,11 +52,17 @@ class Route {
 							$data[$key] = $defaults[$key];
 					}
 				}
+				if (!isset($data['action'])) {
+					$data['action'] = $this->routePatterns['default'][1]['action'];
+				}
 				return $data;
 			}
 		}
 		if (!isset($data)) {
 			$data = $this->routePatterns['default'][1];
+		}
+		if (!isset($data['action'])) {
+			echo 'It is not set';
 		}
 		return $data;
 	}

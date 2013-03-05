@@ -1,7 +1,7 @@
 <?php
 namespace MuMVC;
 
-class Db {
+class Db implements ICacheable {
 	protected $driver;
 	public function __construct($driver='mysql') {
 		$driverString = __NAMESPACE__ . '\\Db\\' . ucfirst($driver) . 'Driver';
@@ -16,5 +16,7 @@ class Db {
 	public function fetchAssoc() {
 		return $this->driver->fetchAssoc();
 	}
+	public function cacheSave() { }
+	public function cacheLoad($data) { }
 }
 ?>

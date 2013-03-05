@@ -32,8 +32,16 @@ class Template {
 		return $_out;
 	}
 
-	function asigna($var, $value) {
-		$this->vars[$var] = $value;
+	function asigna($var, $value=null) {
+		if (null != $value) {
+			$this->vars[$var] = $value;
+		}
+		else if (is_array($var)) {
+			if (!is_array($this->vars))
+				$this->vars = $var;
+			else
+				$this->vars = array_merge($this->vars, $var);
+		}
 	}
 
 	function parse ($block) {
