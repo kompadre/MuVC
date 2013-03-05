@@ -17,7 +17,7 @@ class Db implements ICacheable {
 		parent::instance(__CLASS__, $driver);
 	}
 	public function query($query) {
-		return $this->driver->query($query);
+		$this->driver->query($query);
 	}
 	public function fetchAssoc() {
 		return $this->driver->fetchAssoc();

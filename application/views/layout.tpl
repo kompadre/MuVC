@@ -1,6 +1,9 @@
-<html>
+<html lang="en">
+<head>
+<link rel="stylesheet" type="text/css" href="/assets/css/main.css" />
+</head>
 <body style="background-color: #ccc">
-<div style="margin: auto; width: 800px; height: 500px; background-color: white;">
+<div class="box">
 {$CONTENT}
 </div>
 </body>

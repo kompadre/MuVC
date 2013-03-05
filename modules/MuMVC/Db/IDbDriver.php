@@ -5,6 +5,8 @@
    at http://alex.413x31.com/Projects/MuMVC/licence.txt */
 namespace MuMVC\Db;
 
+const DRIVER_ERROR = 0xF01;
+
 interface IDbDriver { 
 	public function query($sql);
 	public function fetchAssoc();

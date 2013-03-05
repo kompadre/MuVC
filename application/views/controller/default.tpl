@@ -1,6 +1,14 @@
-<h1>{$title}</h1>
+<h1>Alexey Serikov Kompaniets</h1>
 <ul>
-{block name="row"}
-<li>Artist: <b>{$artist}</b>, Title: <b style="color: #{$color};">{$title}</b></li>
-{/block}
+<li>Bio</li>
+<li>Curriculum in Spanish</li>
+<li>Curriculum in English</li>
+<li>Curriculum in Russian</li>
+<li>Projects
+<ul>
+<li>MuMVC</li>
+<li>Bioseguretat</li>
+<li>Template</li>
+</ul>
+</li>
 </ul>

@@ -15,10 +15,10 @@ class MysqlDriver implements IDbDriver {
 				$params['server'], $params['username'], $params['password']
 		);
 		if (!$this->connection) {
-			throw new \Exception('Cannot connect to DB with username <b>' . $params['username'] . '</b>');
+			throw new \Exception('Cannot connect to DB with username <b>' . $params['username'] . '</b>', DRIVER_ERROR);
 		}
 		if (! mysql_select_db($params['dbname'], $this->connection) ) {
-			throw new \Exception('Cannot select DB <b>' . $params['dbname'] . '</b>');
+			throw new \Exception('Cannot select DB <b>' . $params['dbname'] . '</b>', DRIVER_ERROR);
 		}
 	}
 	public function query($query) {
@@ -27,7 +27,7 @@ class MysqlDriver implements IDbDriver {
 		$error = mysql_error();
 		if (!empty ($error)) {
 			array_pop($this->queryStack);
-			throw new \Exception('There was an error in last query: <br><pre>'.$error.'</pre>');
+			throw new \Exception('There was an error in last query: <br><pre>'. $error .'</pre>', DRIVER_ERROR);
 		}
 	}
 	public function fetchAssoc() {
