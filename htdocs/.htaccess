@@ -1,10 +1,10 @@
 # This should be set in server's most basic configuration file (e.g. apache2.conf) but if it's not do it here: 
 # Options -Indexes
 # If something is wrong with routing, uncommenting this: 
-# AcceptPathInfo On
+AcceptPathInfo On
 # This is shamelessly copied from Kohana (www.kohana.org) .htaccess
 RewriteEngine On
 RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule .* index.php/$0 [R]
+RewriteRule .* index.php/$0 [T]
