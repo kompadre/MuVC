@@ -15,7 +15,6 @@ class MysqlDriver implements IDbDriver {
 				$params['server'], $params['username'], $params['password']
 		);
 		if (!$this->connection) {
-			echo "HERE";
 			throw new Exception('Cannot connect to DB with <b>' . $params['username'] . '</b>');
 		}
 		if (! mysql_select_db($params['dbname'], $this->connection) ) {

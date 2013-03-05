@@ -7,7 +7,11 @@ class Db implements ICacheable {
 	protected $driver;
 	public function __construct($driver='mysql') {
 		$driverString = __NAMESPACE__ . '\\Db\\' . ucfirst($driver) . 'Driver';
-		$this->driver = new $driverString(Registry::get('db:params'));
+		try {
+			$this->driver = new $driverString(Registry::get('db:params'));
+		} catch (\Exception $e) {
+			echo $e->getStatus();
+		}
 	}
 	public static function instance($driver='mysql') {
 		parent::instance(__CLASS__, $driver);
