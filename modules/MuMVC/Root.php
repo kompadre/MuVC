@@ -12,15 +12,20 @@ define('APP_PATH', realpath( __DIR__ . '/../../application' ));
 define('APP_DEFAULT_TPL', realpath( APP_PATH . '/views/default/default.tpl' ));
 
 require_once(__DIR__ . '/Cache.php');
-require_once(__DIR__ . '/ICacheable.php');
 require_once(__DIR__ . '/Db.php');
 require_once(__DIR__ . '/View.php');
 require_once(__DIR__ . '/Controller.php');
 require_once(__DIR__ . '/Registry.php');
+require_once(__DIR__ . '/Route.php');
 require_once(__DIR__ . '/ActionController.php');
 require_once(__DIR__ . '/Template.php');
-require_once(__DIR__ . '/autoload.php');
+// Register Application's autoloader first as it has more loading to do
 require_once(APP_ROOT. '/autoload.php');
+require_once(__DIR__ . '/autoload.php');
+
+// This thing will register a dummy autoload that throws AutoloadExceptions
+// without even giving a try. Make sure that this is the last autoload registred. 
+require_once(__DIR__ . '/AutoloadException.php');
 require_once(APP_ROOT. '/config.php');
 
 define('MUMVC_VERSION', .1);
@@ -28,8 +33,6 @@ define('MUMVC_CACHE_KEY_PREFFIX', 'TinyMVC-b0x1-');
 
 /**
  * Provides reusable singleton
- * 
- * @author Alexey Serikov <kompadre@gmail.com>
  */
 abstract class Root 
 {

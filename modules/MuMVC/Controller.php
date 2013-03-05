@@ -2,8 +2,8 @@
 namespace MuMVC;
 
 class Controller extends Root implements ICacheable {
-	private $_output;
 	private $controller;
+	private $route;
 	/**
 	 * @return MuMVC\Controller
 	 */
@@ -12,6 +12,7 @@ class Controller extends Root implements ICacheable {
 	}
 	
 	protected function __construct() {
+		$this->route = new Route();
 	}
 	public function cacheSave() {
 		return $this->_output;
@@ -25,31 +26,34 @@ class Controller extends Root implements ICacheable {
 	public function index() {
 		return View::instance()->render();
 	}
-	public function dispatch($route) {
+	public function dispatch() {
+		$route = $this->route->parse();
 		try {
-			// To let actual Controller decide wether to cache or not
 			$actionControllerString = 'Application\\Controller\\' . ucfirst($route['controller']);
 			$actionController = new $actionControllerString();
-			$actionController->before();
-			if (Registry::get('caching') && ($cachedContent = Cache::instance()->fetchContent($route)) ) {
-				echo $cachedContent;
-				return;
-			}
-			$actionMethod = $route['action'] . 'Action';
-			if (method_exists($actionController, $actionMethod)) {
-				$actionController->$actionMethod();
-			}
-			else {
-				$actionController->defaultAction($actionMethod);
-			}
-			$content = $actionController->after();
-			if (Registry::instance()->get('caching')) {			
-				Cache::instance()->saveContent($route, $content);
-			}
-			echo $content;
-		} catch (Exception $e) {
-			echo $e->getMessage();
+		} catch ( AutoloadException $e) {
+			$actionDefaultControllerString = 'Application\\Controller\\' . ucfirst($this->route->getDefault('controller'));
+			$actionController = new $actionDefaultControllerString();
+			
 		}
+		
+		$actionController->before();
+		if (Registry::get('caching') && ($cachedContent = Cache::instance()->fetchContent($route)) ) {
+			echo $cachedContent;
+			return;
+		}
+		$actionMethod = $route['action'] . 'Action';
+		if (method_exists($actionController, $actionMethod)) {
+			$actionController->$actionMethod();
+		}
+		else {
+			$actionController->defaultAction($actionMethod);
+		}
+		$content = $actionController->after();
+		if (Registry::instance()->get('caching')) {			
+			Cache::instance()->saveContent($route, $content);
+		}
+		echo $content;
 	}
 }
 ?>

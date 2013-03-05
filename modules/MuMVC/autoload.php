@@ -6,6 +6,7 @@
 
 namespace MuMVC;
 $result = spl_autoload_register(function($class) {
+	echo "MuMVC Autoloader looking for <b>$class</b><br>";
 	$path = str_replace('\\', '/', $class) . '.php';
 	if (file_exists( MUMVC_ROOT . '/../../modules/' . $path)) {
 		include MUMVC_ROOT . '/../../modules/' . $path;

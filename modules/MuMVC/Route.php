@@ -6,14 +6,13 @@
 
 namespace MuMVC;
 
-class Route { 	
+class Route {
 	protected $routePatterns = array(
 		'default' => array(
 			'/^\/(?P<controller>[a-z]+)(\/(?P<action>[a-z]+)){0,1}(\/(?<id>[0-9]+)){0,1}/', 
 				//default controller and action
 				array('controller' => 'controller', 'action' => 'index')),
-	);
-	
+	);	
 	/**
 	 * @param string $path
 	 */
@@ -70,6 +69,7 @@ class Route {
 	protected function getPathFromSuperGlobal() {
 		return $_SERVER['REQUEST_URI'];
 	}
-	public function cacheSave() { }
-	public function cacheLoad($data) { }
+	public function getDefault($string) {
+		return $this->routePatterns['default'][1][$string];
+	}
 }

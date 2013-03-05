@@ -1,6 +1,8 @@
 <?php
 namespace MuMVC;
 
+require_once MUMVC_ROOT . '/Db/IDbDriver.php';
+
 class Db implements ICacheable {
 	protected $driver;
 	public function __construct($driver='mysql') {
