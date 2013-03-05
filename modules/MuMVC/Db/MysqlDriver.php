@@ -6,7 +6,7 @@
  
 namespace MuMVC\Db;
 
-class MysqlDriver {
+class MysqlDriver implements IDbDriver {
 	private $connection;
 	private $queryStack = array();
 	
@@ -15,6 +15,7 @@ class MysqlDriver {
 				$params['server'], $params['username'], $params['password']
 		);
 		if (!$this->connection) {
+			echo "HERE";
 			throw new Exception('Cannot connect to DB with <b>' . $params['username'] . '</b>');
 		}
 		if (! mysql_select_db($params['dbname'], $this->connection) ) {

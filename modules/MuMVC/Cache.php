@@ -5,6 +5,10 @@
  * @author Alexey Serikov
  */
 namespace MuMVC;
+
+require_once MUMVC_ROOT . '/Cache/ICacheDriver.php';
+require_once MUMVC_ROOT . '/ICacheable.php';
+
 class Cache extends Root 
 {
 	/**

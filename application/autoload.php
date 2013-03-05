@@ -5,7 +5,8 @@
    at http://alex.413x31.com/Projects/MuMVC/licence.txt */
  
 namespace Application;
-$result = spl_autoload_register(function($class) {
+spl_autoload_register(function($class) {
+	echo "Trying to find $class<br>";
 	$path = str_replace('\\', '/', substr($class, strpos($class, '\\')+1)) . '.php';
 	if (file_exists( APP_ROOT . '/classes/' . $path)) {
 		include APP_ROOT . '/classes/' . $path;
