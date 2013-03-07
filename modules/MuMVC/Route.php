@@ -34,7 +34,6 @@ class Route {
 			$path = $this->getPathFromSuperGlobal();
 		}
 		if (isset(Route::$parsedRoutes[$path])) {
-			echo 'ere';
 			return Route::$parsedRoutes[$path];
 		}
 		
