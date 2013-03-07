@@ -34,7 +34,6 @@ class Route {
 			$path = $this->getPathFromSuperGlobal();
 		}
 		if (isset(Route::$parsedRoutes[$path])) {
-			echo 'ere';
 			return Route::$parsedRoutes[$path];
 		}
 		
@@ -70,7 +69,6 @@ class Route {
 				if (!isset($data['action'])) {
 					$data['action'] = $this->routePatterns['default'][1]['action'];
 				}
-				var_dump($data);
 				return $data;
 			}
 		}
