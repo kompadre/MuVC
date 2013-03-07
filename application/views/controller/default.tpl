@@ -6,7 +6,7 @@
 <li>Curriculum in Russian</li>
 <li>Projects
 <ul>
-<li><a href="http://git.413x31.com/gitweb/?p=mumvc.git">MuMVC</a></li>
+<li><a href="http://git.413x31.com/gitweb/?p=mumvc.git">&mu;MVC</a></li>
 <li>Bioseguretat</li>
 <li>Template</li>
 </ul>
