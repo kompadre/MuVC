@@ -2,8 +2,32 @@ h1 {
 	margin-left: 20px;
 }
 .box {
-	padding: 10px; border-radius: 10px; margin: auto; width: 800px; height: 500px; background-color: white;
+	padding: 10px; border-radius: 10px; margin: auto; margin-top: 10px; width: 800px; height: 500px; background-color: white;
 }
 .footer {
 	padding: 10px; border-radius: 10px; margin: auto; margin-top: 10px; width: 800px; background-color: #ffe;
+}
+.top {
+	padding: 10px; border-radius: 10px; height: 20px; margin: auto; width: 800px; background-color: gray;
+}
+.top ul {
+	padding: 0px;
+	margin: 0px;
+}
+.top ul li {
+	background-color: gray;
+	display: box;
+	color: white;
+	font-weight: bold;
+	float: left;
+	list-style-position: inside;
+	list-style-type: circle;
+	margin-left: 10px;
+}
+.top ul li a {
+	color: white;
+	text-decoration: none;
+}
+.top ul li a:hover {
+	text-decoration: underline;
 }
