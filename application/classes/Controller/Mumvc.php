@@ -18,11 +18,12 @@ class Mumvc extends ActionController {
 		}
 		parent::before();
 	}
+	public function index() { echo 'ere'; }
 	public function licenceAction() {
-		echo "<pre>";
+		echo '<pre>';
 		$fh = fopen( APP_PATH . '/../licence.txt', 'r' );
 		fpassthru($fh);
 		fclose($fh);
-		echo "</pre>";
+		die ('</pre>'); // Is it good? Is it bad? 
 	}
 }

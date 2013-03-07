@@ -1,6 +1,6 @@
 <h1>Alexey Serikov Kompaniets</h1>
 <ul>
-<li>Bio</li>
+<li>Bio - <a href="/old/">Old website</a></li>
 <li><a href="/assets/pdf/CV_es.pdf">Curriculum in Spanish</a></li>
 <li><a href="/assets/pdf/CV_en.pdf">Curriculum in English</a></li>
 <li>Curriculum in Russian</li>

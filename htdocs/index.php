@@ -9,6 +9,7 @@ use MuMVC\Controller;
 use MuMVC\Registry;
 
 Registry::instance()->set('caching', true);
+Registry::instance()->set('caching_routes', true);	
 
 try {
 	Controller::instance()->dispatch();	

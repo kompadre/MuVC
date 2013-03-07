@@ -19,6 +19,7 @@ abstract class ActionController {
 		$this->action = $action;
 		$this->params = $params;
 	}
+	
 	protected function findTemplate($templatePath=null) {
 		if ($templatePath == null) {
 			$controllerName = $this->controller;
@@ -27,9 +28,9 @@ abstract class ActionController {
 			}
 			$controllerName = strtolower($controllerName);
 			$templatePath = APP_PATH . '/views/' . $controllerName . '/' . $this->action . '.tpl';
-			if (file_exists($templatePath)) {
-				return $templatePath;
-			}
+		}
+		if (file_exists($templatePath)) {
+			return $templatePath;
 		}
 		return FALSE;
 	}
