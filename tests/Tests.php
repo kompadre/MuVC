@@ -1,5 +1,7 @@
 <?php
 namespace MuMVC;
+use Application\Model\Hobby;
+
 class Tests extends \PHPUnit_Framework_TestCase {
 	public function testSingletonInstances() {
 		$cache1 = Cache::instance();
@@ -12,20 +14,48 @@ class Tests extends \PHPUnit_Framework_TestCase {
 	}
 	public function testAutoloading() {
 		$testInstance = new TestClass();
+		$this->assertTrue(is_object($testInstance));
 	}
 	public function testCaching() {
 		$data = 'Data';
-		if ( Cache::instance()->store('key', 'value', 1024000) ) {
+		if ( Cache::instance()->store('key', 'value', null) ) {
 			$this->assertSame( Cache::instance()->fetch('key'), $data );
 		}
-		$this->fail("APC is not enabled!");
-		apc_clear_cache('user');
+		else {
+			$this->markTestSkipped("APC is not enabled!");
+		}
 	}
 	public function testTemplate() {
 		$tpl = new Template(APP_PATH . '/views/controller/default.tpl');
 		$tpl->parse('bla');
 		$tpl->parse('bla');
-		echo $tpl->render();
-		die();
+		$this->assertTrue(is_string($tpl->render()));
+	}
+	public function testTwoModels() {
+		$modelAlbum = new \Application\Model\Album();
+		$modelHobby = new \Application\Model\Hobby();
+		$this->assertTrue( is_array($modelAlbum->fetchAll()) );
+		$this->assertTrue( is_array($modelHobby->fetchAll()) );
+		$row = $modelHobby->fetch(1);
+		$this->assertTrue( is_array($row));
+		$this->assertSame($row['name'], 'Bassoon');
+	}
+	public function testToSqlInjectStuff() {
+		$model = new \Application\Model\Hobby();
+		$result = $model->query('SELECT id FROM ' . Hobby::TABLE . ' WHERE id = :id LIMIT 1', array(
+			':id' => "1'" 
+		));
+		$this->assertTrue( ! $model->error());
+		$this->assertSame( $result, array('id' => '1'));
+		$result = $model->query('SELECT * FROM ' . Hobby::TABLE . ' WHERE 1');
+		$this->assertTrue( is_numeric($result));
+		$model->freeResult();
+	}
+	public function testFreeNullsPointer() {
+		$model = new \Application\Model\Album();
+		$model->query('SELECT * FROM ' . $model::TABLE . ' LIMIT 10');
+		$model->freeResult();
+		$qh = $model->getDriver()->getHandler();
+		$this->assertSame($qh, null); 
 	}
 }

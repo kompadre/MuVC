@@ -46,5 +46,12 @@ class Registry extends Root implements ICacheable {
 	public function cacheLoad($data) {
 		self::$registry = $data;
 	}
+	
+	public function __set($key, $value) {
+		self::$registry[$key] = $value;
+	}
+	public function __get($key) {
+		return self::$registry[$key];
+	}
 }
 ?>

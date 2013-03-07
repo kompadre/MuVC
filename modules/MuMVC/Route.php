@@ -8,6 +8,8 @@ namespace MuMVC;
 
 class Route {
 	protected $routePatterns = array(
+		'mumvc' => array(
+			'/^\/MuMVC(\/(?P<action>[a-z]+))/', array('controller' => 'mumvc')),
 		'default' => array(
 			'/^\/(?P<controller>[a-z]+)(\/(?P<action>[a-z]+)){0,1}(\/(?<id>[0-9]+)){0,1}/', 
 				//default controller and action
@@ -47,9 +49,11 @@ class Route {
 							$data[$key] = array_shift($matches[$key]);
 						else if (is_string($matches[$key]))
 							$data[$key] = $matches[$key];
-						else if (isset($defaults[$key]))
-							$data[$key] = $defaults[$key];
 					}
+				}
+				foreach($defaults as $key => $val) {
+					if (!isset($data[$key]))
+						$data[$key] = $defaults[$key];
 				}
 				if (!isset($data['action'])) {
 					$data['action'] = $this->routePatterns['default'][1]['action'];

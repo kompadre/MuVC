@@ -8,13 +8,17 @@ namespace Application\Model;
 
 use MuMVC\Db;
 
-class Album extends Db { 
-	const TABLE = 'album';
+class Hobby extends Db { 
+	const TABLE = 'hobby';
 	public function fetchAll() {
-		$sql = 'SELECT * FROM '. self::TABLE .' WHERE 1';
+		$sql = 'SELECT * FROM '. self::TABLE. ' WHERE 1';
 		$this->query($sql);
 		$result = array();
 		while ($result[] = $this->fetchAssoc());
 		return $result;
+	}
+	public function fetch($id) {
+		$sql = 'SELECT * FROM '. self::TABLE .' WHERE id = :id LIMIT 1';
+		return $this->query($sql, array(':id' => $id));
 	}
 }

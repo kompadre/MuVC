@@ -11,14 +11,13 @@ abstract class ActionController {
 	protected $action;
 	protected $template;
 	protected $layout;
-	public function __construct($action='default', $controller=null) {
-		if ($controller == null) {
-			$this->controller = get_class($this);
-		}
-		else {
-			$this->controller = $controller;
-		}
+	protected $params;
+	protected $auto_render = TRUE;
+	
+	public function __construct($action='default', $params=array(), $controller=FALSE) {
+		$this->controller = $controller ? $controller : get_class($this);
 		$this->action = $action;
+		$this->params = $params;
 	}
 	protected function findTemplate($templatePath=null) {
 		if ($templatePath == null) {
@@ -28,19 +27,45 @@ abstract class ActionController {
 			}
 			$controllerName = strtolower($controllerName);
 			$templatePath = APP_PATH . '/views/' . $controllerName . '/' . $this->action . '.tpl';
+			if (file_exists($templatePath)) {
+				return $templatePath;
+			}
 		}
-		if (file_exists($templatePath)) {
-			return $templatePath;
-		}
-		return APP_DEFAULT_TPL;
+		return FALSE;
 	}
 	public function before() {
-		$this->template = new Template($this->findTemplate());
-		$this->layout = TPL_DEFAULT_LAYOUT;
+		if ($this->auto_render) {
+			$templateFile = $this->findTemplate();
+			if ($templateFile) {
+				$this->template = new Template($this->findTemplate());
+			}
+			$this->layout = TPL_DEFAULT_LAYOUT;
+		}
 	}
 	public function after() {
-		$tpl_layout = new Template($this->layout);
-		$tpl_layout->asigna('CONTENT', $this->template->render());
-		return $tpl_layout->render();
+		if ($this->auto_render) {
+			$tpl_layout = new Template($this->layout);
+			$tpl_layout->asigna('CONTENT', $this->template->render());
+			return $tpl_layout->render();
+		}
+	}
+	public function defaultAction($originalAction) {
+		if (!is_object($this->template)) {
+			$this->error(404, $originalAction);
+		}
+	}
+	public function setAction($action) {
+		$this->action = $action;
+	}
+	public function setController($controller) {
+		$this->controller = $controller;
+	}
+	public function error($code, $message='') {
+		$this->controller = 'error';
+		$this->action = 'error' . $code;
+		$this->before();
+		if ($message) {
+			$this->template->asigna('MESSAGE', $message);
+		}
 	}
 }

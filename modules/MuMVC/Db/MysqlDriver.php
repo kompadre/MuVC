@@ -6,9 +6,17 @@
  
 namespace MuMVC\Db;
 
-class MysqlDriver implements IDbDriver {
+use MuMVC\Root;
+use Exception;
+
+class MysqlDriver extends Root implements IDbDriver {
 	private $connection;
-	private $queryStack = array();
+	private $qh = null;
+	private $error = '';
+	
+	static public function instance($params) {
+		return parent::instance(__CLASS__, $params);
+	}
 	
 	public function __construct($params) {
 		$this->connection = mysql_connect(
@@ -22,19 +30,51 @@ class MysqlDriver implements IDbDriver {
 		}
 	}
 	public function query($query) {
-		array_push($this->queryStack, 
-			mysql_query($query, $this->connection));
+		$qh = mysql_query($query, $this->connection);
 		$error = mysql_error();
 		if (!empty ($error)) {
-			array_pop($this->queryStack);
+			$this->error = $error;
 			throw new \Exception('There was an error in last query: <br><pre>'. $error .'</pre>', DRIVER_ERROR);
 		}
+		$numRows = mysql_num_rows($qh);
+		if (0 === $numRows) {
+			return FALSE;
+		}
+		else if (1 === $numRows) {
+			$row = mysql_fetch_assoc($qh);
+			mysql_free_result($qh);
+			return $row; 
+		}
+		else {
+			$this->qh = $qh;
+			return $numRows;
+		}	
 	}
 	public function fetchAssoc() {
-		$qh = array_pop($this->queryStack);
-		if ( $row = mysql_fetch_assoc($qh) ) {
-			array_push($this->queryStack, $qh); //unpop
+		$qh = $this->qh;
+		if ($qh == null) 
+			throw new \Exception("Trying to fetch from a null handler.", DRIVER_ERROR);
+		
+		$row = mysql_fetch_assoc($qh);
+		if (!$row) {
+			mysql_free_result($qh);
 		}
 		return $row;
 	}
+	public function escape($string) {
+		return mysql_real_escape_string($string, $this->connection);
+	}
+	public function error() {
+		return ($this->error . mysql_error());
+	}
+	public function freeResult() {
+		if (is_resource($this->qh)) {
+			mysql_free_result($this->qh);
+			$this->qh = null;
+		}
+		return FALSE;
+ 	}
+ 	public function getHandler() {
+ 		return $this->qh;
+ 	}
 }

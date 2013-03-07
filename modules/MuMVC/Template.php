@@ -8,12 +8,15 @@ class Template {
 
 	// Construtor
 	function __construct ($file) {
-		if ($file != "") {
-			if (!is_readable($file)) die ("No se encuentra el archivo de plantilla $file... ");
-			else {
-				$fh = fopen ($file, "r");
-				$this->init($fh);
-			}
+		$this->setFile($file);
+	}
+	public function setFile($file) {
+		if (is_readable($file)) {
+			$fh = fopen($file, 'r');
+			$this->init($fh);
+		}
+		else {
+			throw new \Exception("Template file < $file > couldn't be found.");
 		}
 	}
 	/**

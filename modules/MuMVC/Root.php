@@ -25,7 +25,9 @@ require_once(__DIR__ . '/autoload.php');
 
 // This thing will register a dummy autoload that throws AutoloadExceptions
 // without even giving a try. Make sure that this is the last autoload registred. 
+if (!defined('NO_AUTOLOAD_EXCEPTION')) {
 require_once(__DIR__ . '/AutoloadException.php');
+}
 require_once(APP_ROOT. '/config.php');
 
 define('MUMVC_VERSION', .1);

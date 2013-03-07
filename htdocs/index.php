@@ -1,6 +1,5 @@
 <?php
-list($micro, $time) = explode(' ', microtime());
-$mt1 = $micro + ($time%100);
+$mt1 = microtime(true);
 
 require_once __DIR__ . '/../modules/MuMVC/Root.php';
 
@@ -14,15 +13,11 @@ Registry::instance()->set('caching', true);
 try {
 	Controller::instance()->dispatch();	
 } catch (Exception $e) {
-	if (404 == $e->getCode()) {
-		echo "<h1>404 Page not found!</h1><br>";
-	}
+	echo "<h1>Some error occured</h1>";
+	echo "<p>{$e->getMessage()}</p>";
 }
 
-list($micro, $time) = explode(' ', microtime());
-$mt2 = $micro + ($time%100);
-if ($mt2 < $mt1)
-	$mt2 += 100;
-
-echo "Executed in " . ($mt2 - $mt1) . "<br>";
-echo "Memory peak usage: " . memory_get_peak_usage();
+echo '<div class="footer">' .
+	 'Executed in ' . ( microtime(true) - $mt1 ) . '<br>' .
+	 'Memory peak usage: ' . memory_get_peak_usage() .
+	 '</div>';

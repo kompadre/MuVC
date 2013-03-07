@@ -10,7 +10,9 @@ class Controller extends Root implements ICacheable {
 	public static function instance() {
 		return parent::instance(__CLASS__);
 	}
-	
+	public function getController() {
+		return $this->controller;
+	}
 	protected function __construct() {
 		$this->route = new Route();
 	}
@@ -20,24 +22,19 @@ class Controller extends Root implements ICacheable {
 	public function cacheLoad($data) {
 		$this->_output = $data;
 	}
-	public function helloWorld() {
-		echo "Hello world!\n";
-	}
-	public function index() {
-		return View::instance()->render();
-	}
 	public function dispatch() {
 		$route = $this->route->parse();
+		
 		try {
 			$actionControllerString = 'Application\\Controller\\' . ucfirst($route['controller']);
-			$actionController = new $actionControllerString();
+			$actionController = new $actionControllerString( $route['action'] );
 		} catch ( AutoloadException $e) {
 			$actionDefaultControllerString = 'Application\\Controller\\' . ucfirst($this->route->getDefault('controller'));
 			$actionController = new $actionDefaultControllerString();
-			
 		}
-		
+		$this->controller = $actionController;
 		$actionController->before();
+		
 		if (Registry::get('caching') && ($cachedContent = Cache::instance()->fetchContent($route)) ) {
 			echo $cachedContent;
 			return;
@@ -49,6 +46,7 @@ class Controller extends Root implements ICacheable {
 		else {
 			$actionController->defaultAction($actionMethod);
 		}
+		
 		$content = $actionController->after();
 		if (Registry::instance()->get('caching')) {			
 			Cache::instance()->saveContent($route, $content);
