@@ -11,12 +11,6 @@ use \MuMVC\Registry;
 use \MuMVC\Template;
 
 class Nocache extends ActionController {
-	public function before() {
-		Registry::set('caching', FALSE);
-		$templateFile = $this->findTemplate(APP_PATH . '/views/controller/default.tpl');
-		$this->template = new Template($templateFile);
-		$this->layout = TPL_DEFAULT_LAYOUT;
-	}
 	public function indexAction() {
 		$album = new Album();
 		$album->query("SELECT * FROM album WHERE 1");
@@ -35,8 +29,5 @@ class Nocache extends ActionController {
 			'artist' => 'I WANT IT NOW'
 		));
 		$this->template->parse('row');
-	}
-	public function defaultAction($action=null) {
-		throw new \Exception("404 action not found", 404);
 	}
 }

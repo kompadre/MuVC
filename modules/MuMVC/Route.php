@@ -7,14 +7,16 @@
 namespace MuMVC;
 
 define ('MUMVC_ROUTES_CACHE_KEY', MUMVC_CACHE_KEY_PREFFIX . 'Route_parsedRoutes'); 
-
+define ('MUMVC_ROUTE_REASONABLECACHESIZE', 200);
 class Route {
 	
 	static protected $parsedRoutes = array();
+	protected $currentRoute;
+	protected $currentPath;
 	
 	protected $routePatterns = array(
 		'mumvc' => array(
-			'/^\/MuMVC(\/(?P<action>[a-z]+))/', array('controller' => 'mumvc')),
+			'/^\/MuMVC(\/(?P<action>[a-z]+))*/', array('controller' => 'mumvc')),
 		'default' => array(
 			'/^\/(?P<controller>[a-z]+)(\/(?P<action>[a-z]+)){0,1}(\/(?<id>[0-9]+)){0,1}/', 
 				//default controller and action
@@ -24,16 +26,16 @@ class Route {
 	 * @param string $path
 	 */
 	public function __construct($path=null) {
-		if ( $parsedRoutes = Cache::instance()->fetch( MUMVC_ROUTES_CACHE_KEY)) {
+		if ( Registry::get('caching_routes') && 
+				$parsedRoutes = Cache::instance()->fetch( MUMVC_ROUTES_CACHE_KEY)) {
 			Route::$parsedRoutes = $parsedRoutes;
-		} 
+		}
 		$this->parse($path);
 	}
 	public function parse($path=null) {
 		if ($path === null) {
 			$path = $this->getPathFromSuperGlobal();
-		}
-		
+		}		
 		// Clean up the path		
 		$first = 0; 
 		$last = strlen($path);
@@ -48,14 +50,14 @@ class Route {
 		if (($last - $first) > 0)
 			$path = substr($path, $first, ($last-$first));
 
-		$path = preg_replace('/[^a-z0-9\/]/', '', $path);		
-		
-		var_dump($path);
-		
+		$path = preg_replace('/[^a-zA-Z0-9_\/]/', '', $path);		
+
 		if (isset(Route::$parsedRoutes[$path])) {
 			return Route::$parsedRoutes[$path];
 		}
 		
+		$this->currentPath = $path;
+				
 		foreach($this->routePatterns as $name => $pattern) {
 			list($expression, $defaults) = $pattern;
 			if (preg_match($expression, $path, $matches)) {
@@ -74,16 +76,15 @@ class Route {
 				if (!isset($data['action'])) {
 					$data['action'] = $this->routePatterns['default'][1]['action'];
 				}
-				return $data;
+				else {
+				}
+				return $this->currentRoute = $data;
 			}
 		}
 		if (!isset($data)) {
 			$data = $this->routePatterns['default'][1];
 		}
-		if (!isset($data['action'])) {
-			echo 'It is not set';
-		}
-		return Route::$parsedRoutes[$path] = $data;
+		return $this->currentRoute = $data;
 	}
 	protected function getPathFromSuperGlobal() {
 		return $_SERVER['REQUEST_URI'];
@@ -91,7 +92,18 @@ class Route {
 	public function getDefault($string) {
 		return $this->routePatterns['default'][1][$string];
 	}
-	public function __destruct() {
-		Cache::instance()->store( MUMVC_ROUTES_CACHE_KEY, Route::$parsedRoutes);
+	public function persist() {
+		if (Registry::get('caching_routes') === FALSE)
+			return;
+		/*
+		* FIXME: possible bottleneck here. If I store all possible paths
+		* here, I'll be golden in fantasy world. But if some scriptkiddo
+		* starts spamming randomly generated URLs, they all will go into
+		* my little array and possibly deny me of service.
+		*/
+		if ( count(Route::$parsedRoutes) <= MUMVC_ROUTE_REASONABLECACHESIZE) {
+			Route::$parsedRoutes[$this->currentPath] = $this->currentRoute;
+			Cache::instance()->store( MUMVC_ROUTES_CACHE_KEY, Route::$parsedRoutes);
+		}
 	}
 }

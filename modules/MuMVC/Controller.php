@@ -24,7 +24,6 @@ class Controller extends Root implements ICacheable {
 	}
 	public function dispatch() {
 		$route = $this->route->parse();
-		
 		try {
 			$actionControllerString = 'Application\\Controller\\' . ucfirst($route['controller']);
 			$actionController = new $actionControllerString( $route['action'] );
@@ -40,6 +39,8 @@ class Controller extends Root implements ICacheable {
 		}
 		$actionMethod = $route['action'] . 'Action';
 		if (method_exists($actionController, $actionMethod)) {
+			// Mark route as good for caching
+			$this->route->persist();
 			$actionController->$actionMethod();
 		}
 		else {
