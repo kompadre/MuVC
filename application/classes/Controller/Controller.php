@@ -33,7 +33,4 @@ class Controller extends ActionController {
 				echo "There was an error while executing some query.";
 		}
 	}
-	public function defaultAction($action=null) {
-		echo "Wrong action $action<br>";	
-	}
 }

@@ -34,7 +34,6 @@ class Controller extends Root implements ICacheable {
 		}
 		$this->controller = $actionController;
 		$actionController->before();
-		
 		if (Registry::get('caching') && ($cachedContent = Cache::instance()->fetchContent($route)) ) {
 			echo $cachedContent;
 			return;

@@ -7,6 +7,8 @@ namespace MuMVC;
 
 define('MUMVC_ROOT', realpath(__DIR__));
 define('MUMVC_SITE_PREFIX', '/index.php');
+define('MUMVC_VERSION', .1);
+define('MUMVC_CACHE_KEY_PREFFIX', 'TinyMVC-b0x1-');
 define('APP_ROOT', realpath( __DIR__ . '/../../application' ));
 define('APP_PATH', realpath( __DIR__ . '/../../application' ));
 define('APP_DEFAULT_TPL', realpath( APP_PATH . '/views/default/default.tpl' ));
@@ -30,8 +32,6 @@ require_once(__DIR__ . '/AutoloadException.php');
 }
 require_once(APP_ROOT. '/config.php');
 
-define('MUMVC_VERSION', .1);
-define('MUMVC_CACHE_KEY_PREFFIX', 'TinyMVC-b0x1-');
 
 /**
  * Provides reusable singleton

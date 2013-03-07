@@ -6,7 +6,12 @@
 
 namespace MuMVC;
 
+define ('MUMVC_ROUTES_CACHE_KEY', MUMVC_CACHE_KEY_PREFFIX . 'Route_parsedRoutes'); 
+
 class Route {
+	
+	static protected $parsedRoutes = array();
+	
 	protected $routePatterns = array(
 		'mumvc' => array(
 			'/^\/MuMVC(\/(?P<action>[a-z]+))/', array('controller' => 'mumvc')),
@@ -19,11 +24,18 @@ class Route {
 	 * @param string $path
 	 */
 	public function __construct($path=null) {
+		if ( $parsedRoutes = Cache::instance()->fetch( MUMVC_ROUTES_CACHE_KEY)) {
+			Route::$parsedRoutes = $parsedRoutes;
+		} 
 		$this->parse($path);
 	}
 	public function parse($path=null) {
 		if ($path === null) {
 			$path = $this->getPathFromSuperGlobal();
+		}
+		if (isset(Route::$parsedRoutes[$path])) {
+			echo 'ere';
+			return Route::$parsedRoutes[$path];
 		}
 		
 		// Clean up the path		
@@ -58,6 +70,7 @@ class Route {
 				if (!isset($data['action'])) {
 					$data['action'] = $this->routePatterns['default'][1]['action'];
 				}
+				var_dump($data);
 				return $data;
 			}
 		}
@@ -67,13 +80,15 @@ class Route {
 		if (!isset($data['action'])) {
 			echo 'It is not set';
 		}
-		return $data;
+		return Route::$parsedRoutes[$path] = $data;
 	}
-		
 	protected function getPathFromSuperGlobal() {
 		return $_SERVER['REQUEST_URI'];
 	}
 	public function getDefault($string) {
 		return $this->routePatterns['default'][1][$string];
+	}
+	public function __destruct() {
+		Cache::instance()->store( MUMVC_ROUTES_CACHE_KEY, Route::$parsedRoutes);
 	}
 }
