@@ -1,2 +1,4 @@
-!.htdocs
-old
+*
+!.htaccess
+!index.php
+!favicon.ico

@@ -33,9 +33,6 @@ class Route {
 		if ($path === null) {
 			$path = $this->getPathFromSuperGlobal();
 		}
-		if (isset(Route::$parsedRoutes[$path])) {
-			return Route::$parsedRoutes[$path];
-		}
 		
 		// Clean up the path		
 		$first = 0; 
@@ -50,6 +47,14 @@ class Route {
 		
 		if (($last - $first) > 0)
 			$path = substr($path, $first, ($last-$first));
+
+		$path = preg_replace('/[^a-z0-9\/]/', '', $path);		
+		
+		var_dump($path);
+		
+		if (isset(Route::$parsedRoutes[$path])) {
+			return Route::$parsedRoutes[$path];
+		}
 		
 		foreach($this->routePatterns as $name => $pattern) {
 			list($expression, $defaults) = $pattern;
