@@ -1,7 +1,6 @@
 <?php
 $mt1 = microtime(true);
 
-require_once __DIR__ . '/../modules/MuMVC/Root.php';
 # require_once __DIR__ . '/../modules/MuCMS/autoload.php';
 
 use MuMVC\Route;
@@ -26,4 +25,8 @@ if (! (Controller::instance()->getController() instanceof \Application\Controlle
 	echo '<br>Executed in ' . ( microtime(true) - $mt1 ) . '<br>' .
 		 'Memory peak usage: ' . memory_get_peak_usage() .
 		 '</div>';
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> a4d27f6842bed8636b92d647d08903d489fb84b1
