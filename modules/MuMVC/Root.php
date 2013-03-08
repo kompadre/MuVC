@@ -12,6 +12,9 @@ define('MUMVC_CACHE_KEY_PREFFIX', 'TinyMVC-b0x1-');
 define('APP_ROOT', realpath( __DIR__ . '/../../application' ));
 define('APP_PATH', realpath( __DIR__ . '/../../application' ));
 define('APP_DEFAULT_TPL', realpath( APP_PATH . '/views/default/default.tpl' ));
+define('APP_VIEW', realpath( __DIR__ . '/../../application/views'));
+define('APP_DEFAULT_LAYOUT', 'layout.tpl');
+define('APP_NAMESPACE', 'Application');
 
 require_once(__DIR__ . '/Cache.php');
 require_once(__DIR__ . '/Db.php');

@@ -17,6 +17,9 @@ class Route {
 	protected $routePatterns = array(
 		'mumvc' => array(
 			'/^\/MuMVC(\/(?P<action>[a-z]+))*/', array('controller' => 'mumvc')),
+		'mobile_mumvc' => array(
+			'/^\/mobile\/MuMVC(\/(?P<action>[a-z]+))*/', array('controller' => 'mobile\mumvc')),
+						
 		'default' => array(
 			'/^\/(?P<controller>[a-z]+)(\/(?P<action>[a-z]+)){0,1}(\/(?<id>[0-9]+)){0,1}/', 
 				//default controller and action
@@ -53,7 +56,7 @@ class Route {
 		$path = preg_replace('/[^a-zA-Z0-9_\/]/', '', $path);		
 
 		if (isset(Route::$parsedRoutes[$path])) {
-			return Route::$parsedRoutes[$path];
+			return $this->currentRoute = Route::$parsedRoutes[$path];
 		}
 		
 		$this->currentPath = $path;
@@ -105,5 +108,8 @@ class Route {
 			Route::$parsedRoutes[$this->currentPath] = $this->currentRoute;
 			Cache::instance()->store( MUMVC_ROUTES_CACHE_KEY, Route::$parsedRoutes);
 		}
+	}
+	public function getCurrent() {
+		return $this->currentRoute;
 	}
 }
