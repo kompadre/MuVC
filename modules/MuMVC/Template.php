@@ -1,19 +1,22 @@
 <?php
 namespace MuMVC;
 
-define('TPL_DEFAULT_LAYOUT', APP_PATH . '/views/layout.tpl');
-
 class Template {
-	var $vars, $blocks, $raw_blocks, $raw;
+	var $vars, $blocks, $raw_blocks, $raw, $file;
 
 	// Construtor
 	function __construct ($file) {
 		$this->setFile($file);
 	}
 	public function setFile($file) {
-		if (is_readable($file)) {
+		$file = str_replace('\\', '/', $file);
+		if (!is_file($file)) {
+			$file = APP_VIEW . '/' . $file;
+		}
+		if (is_file($file)) {
 			$fh = fopen($file, 'r');
 			$this->init($fh);
+			$this->file = $file;
 		}
 		else {
 			throw new \Exception("Template file < $file > couldn't be found.");

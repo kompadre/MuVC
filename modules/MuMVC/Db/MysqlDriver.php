@@ -8,6 +8,10 @@ namespace MuMVC\Db;
 
 use MuMVC\Root;
 use Exception;
+use mysql_connect;
+use mysql_query;
+use mysql_fetch_assoc;
+use mysql_free_result;
 
 class MysqlDriver extends Root implements IDbDriver {
 	private $connection;

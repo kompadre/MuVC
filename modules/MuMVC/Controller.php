@@ -22,10 +22,24 @@ class Controller extends Root implements ICacheable {
 	public function cacheLoad($data) {
 		$this->_output = $data;
 	}
+	public function getRoute() {
+		return $this->route;
+	}
 	public function dispatch() {
 		$route = $this->route->parse();
+		
+		if (strpos($route['controller'], '\\') === FALSE) {
+			$controller = ucfirst($route['controller']);
+		}
+		else {
+			$spacesIn = explode('\\', $route['controller']);
+			$spacesOut= array();
+			foreach($spacesIn as $key => $space) { $spacesOut[] = ucfirst($space); }
+			$controller = implode('\\', $spacesOut);
+		}
+
 		try {
-			$actionControllerString = 'Application\\Controller\\' . ucfirst($route['controller']);
+			$actionControllerString = 'Application\\Controller\\' . $controller;
 			$actionController = new $actionControllerString( $route['action'] );
 		} catch ( AutoloadException $e) {
 			$actionDefaultControllerString = 'Application\\Controller\\' . ucfirst($this->route->getDefault('controller'));

@@ -7,15 +7,24 @@
 namespace MuMVC;
 
 abstract class ActionController {
+	/**
+	 * Controller alias that's used to find propper view etc
+	 * @var unknown
+	 */
 	protected $controller;
 	protected $action;
 	protected $template;
 	protected $layout;
 	protected $params;
 	protected $auto_render = TRUE;
+	protected static $crumbs = array();
 	
-	public function __construct($action='default', $params=array(), $controller=FALSE) {
-		$this->controller = $controller ? $controller : get_class($this);
+	public function __construct($action='index', $params=array(), $controller=FALSE) {
+		if (!isset($this->controller)) {
+			$controller = $controller ? $controller : get_class($this);
+			$controller = str_replace(APP_NAMESPACE . '\Controller\\', '', $controller);
+			$this->controller = $controller;
+		}
 		$this->action = $action;
 		$this->params = $params;
 	}
@@ -23,13 +32,11 @@ abstract class ActionController {
 	protected function findTemplate($templatePath=null) {
 		if ($templatePath == null) {
 			$controllerName = $this->controller;
-			if (($pos = strrpos($controllerName, '\\')) !== false) {
-				$controllerName = substr($controllerName, $pos+1);
-			}
+			$controllerName = str_replace('\\', '/', $controllerName);
 			$controllerName = strtolower($controllerName);
-			$templatePath = APP_PATH . '/views/' . $controllerName . '/' . $this->action . '.tpl';
+			$templatePath = $controllerName . '/' . $this->action . '.tpl';
 		}
-		if (file_exists($templatePath)) {
+		if (file_exists(APP_VIEW . '/' . $templatePath)) {
 			return $templatePath;
 		}
 		return FALSE;
@@ -38,15 +45,25 @@ abstract class ActionController {
 		if ($this->auto_render) {
 			$templateFile = $this->findTemplate();
 			if ($templateFile) {
-				$this->template = new Template($this->findTemplate());
+				$this->template = new Template($templateFile);
 			}
-			$this->layout = TPL_DEFAULT_LAYOUT;
+			if ($this->layout) {
+				$this->layout = new Template($this->layout);
+			}
+			else {
+				$this->layout = new Template( APP_DEFAULT_LAYOUT);
+			}
 		}
+	}
+	public function addCrumb( $string, $link) {
+		array_push(ActionController::$crumbs, array($string, $link));		
 	}
 	public function after() {
 		if ($this->auto_render) {
-			$tpl_layout = new Template($this->layout);
-			$tpl_layout->asigna('CONTENT', $this->template->render());
+			$tpl_layout = $this->layout;
+			if (is_object($this->template)) {
+				$tpl_layout->asigna('CONTENT', $this->template->render());
+			}
 			return $tpl_layout->render();
 		}
 	}
