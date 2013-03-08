@@ -20,21 +20,16 @@
     <li><a href="/mobile/">Home</a>
     <li><a href="/old/">Old site</a></li>
 	<li><a href="/mobile/MuMVC/">MuMVC</a>
-	<li><a href="/assets/pdf/CV_es.pdf">Spanish C.V.</a></li>
-	<li><a href="/assets/pdf/CV_en.pdf">English C.V.</a></li>
+	<li><a rel="external" href="/assets/pdf/CV_es.pdf">Spanish C.V.</a></li>
+	<li><a rel="external" href="/assets/pdf/CV_en.pdf">English C.V.</a></li>
     </ul>
-
 	<ul data-role="navbar" data-inset="true" data-divider-theme="b"> 
 	{block name="crumb"}
 	<li data-theme="a"><a href="{$link}">{$description}</a></li>
 	{/block}
 	</ul>
-
-
     </div>
-    
     <div data-role="content">
-	
 	{$CONTENT}
 	<ul data-role="listview" data-inset="true" data-divider-theme="b">
 	</ul>
