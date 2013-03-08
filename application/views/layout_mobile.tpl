@@ -23,23 +23,18 @@
 	<li><a rel="external" href="/assets/pdf/CV_es.pdf">Spanish C.V.</a></li>
 	<li><a rel="external" href="/assets/pdf/CV_en.pdf">English C.V.</a></li>
     </ul>
-	<ul data-role="navbar" data-inset="true" data-divider-theme="b"> 
-	{block name="crumb"}
-	<li data-theme="a"><a href="{$link}">{$description}</a></li>
-	{/block}
-	</ul>
     </div>
     <div data-role="content">
+  {$ROUTE_DEBUG}
 	{$CONTENT}
 	<ul data-role="listview" data-inset="true" data-divider-theme="b">
 	</ul>
-	<ul data-role="listview" data-inset="true" data-divider-theme="d">
-		<li data-role="list-divider">Projects</li>
-		<li><a href="/mobile/MuMVC/">MuMVC</a></li>
-	</ul>
 	</div>
-	<div data-role="footer" data-position="fixed">
-    </div>
+  <div data-role="footer" class="ui-bar">
+  {block name="crumb"}
+  <a href="{$link}" data-icon"arrow-u">{$description}</a>
+  {/block}
+  </div>
 </div>
  </body>
  </html>

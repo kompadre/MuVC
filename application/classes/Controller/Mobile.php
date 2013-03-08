@@ -13,7 +13,7 @@ class Mobile extends ActionController {
 	public function before() {
 		$this->layout = 'layout_mobile.tpl';
 		parent::before();
-		$this->addCrumb('Mobile', '/mobile/');
+		$this->addCrumb('Home', '/mobile/');
 	}
 	public function indexAction() {  }
 	public function error($code, $message) {
@@ -30,10 +30,11 @@ class Mobile extends ActionController {
 	}
 	
 	public function getBreadcrumbs() {
+		$layout = $this->layout;
 		foreach(self::$crumbs as $crumb) {
-			$this->layout->asigna('description', $crumb[0]);
-			$this->layout->asigna('link', $crumb[1]);
-			$this->layout->parse('crumb');
+			$layout->asigna('description', $crumb[0]);
+			$layout->asigna('link', $crumb[1]);
+			$layout->parse('crumb');
 		}
 	}
 }
