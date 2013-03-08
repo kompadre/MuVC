@@ -1,7 +1,7 @@
 <?php
 $mt1 = microtime(true);
 
-# require_once __DIR__ . '/../modules/MuCMS/autoload.php';
+require_once __DIR__ . '/../modules/MuMVC/Root.php';
 
 use MuMVC\Route;
 use MuMVC\Cache;
