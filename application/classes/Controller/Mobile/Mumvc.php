@@ -9,15 +9,17 @@ namespace Application\Controller\Mobile;
 use Application\Controller\Mobile;
 
 class Mumvc extends Mobile { 
-	public function __construct() {
-		$this->controller = 'Mobile/Mumvc';
-		parent::__construct();
-	}
 	public function before() {
 		parent::before();
 		$this->addCrumb('MuMVC', '/mobile/MuMVC/');
 	}
-	public function index() {  }
+	public function licenceAction() {
+		die ( '<pre>' . file_get_contents(APP_PATH . '/../licence.txt') . '</pre>' );
+	}
+	public function teamAction() {
+		$this->addCrumb('Team', '/mobile/MuMVC/team');
+	}
+	public function indexAction() {  }
 	public function error($code, $message) {
 		$this->controller = 'Mobile';
 		$this->action = 'error' . $code;

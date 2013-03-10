@@ -31,9 +31,9 @@ class Mobile extends ActionController {
 	
 	public function getBreadcrumbs() {
 		$layout = $this->layout;
-		foreach(self::$crumbs as $crumb) {
-			$layout->asigna('description', $crumb[0]);
-			$layout->asigna('link', $crumb[1]);
+		foreach(self::$crumbs as $key => $crumb) {
+			$layout->asigna('description', $key);
+			$layout->asigna('link', $crumb);
 			$layout->parse('crumb');
 		}
 	}

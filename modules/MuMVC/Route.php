@@ -4,36 +4,41 @@
  * Full copyright and license information can be found in the file license.txt or 
    at http://alex.413x31.com/Projects/MuMVC/licence.txt */
 
+
+// /(:controller)(/(:action))
+
 namespace MuMVC;
 
 define ('MUMVC_ROUTES_CACHE_KEY', MUMVC_CACHE_KEY_PREFFIX . 'Route_parsedRoutes'); 
-define ('MUMVC_ROUTE_REASONABLECACHESIZE', 200);
+define ('MUMVC_ROUTES_CACHE_SIZE', 200);
+define ('MUMVC_ROUTES_PATTERNS_CACHE_KEY', MUMVC_CACHE_KEY_PREFFIX . 'Route_routePatterns');
+
 class Route {
 	
-	static protected $parsedRoutes = array();
+	static private $parsedRoutes = array();
 	protected $currentRoute;
 	protected $currentPath;
+
+	protected $routePatterns = array();
 	
-	protected $routePatterns = array(
-		'mumvc' => array(
-			'/^\/MuMVC(\/(?P<action>[a-z]+))*/', array('controller' => 'mumvc')),
-		'mobile_mumvc' => array(
-			'/^\/mobile\/MuMVC(\/(?P<action>[a-z]+))*/', array('controller' => 'mobile\mumvc')),
-						
-		'default' => array(
-			'/^\/(?P<controller>[a-z]+)(\/(?P<action>[a-z]+)){0,1}(\/(?<id>[0-9]+)){0,1}/', 
-				//default controller and action
-				array('controller' => 'controller', 'action' => 'index')),
-	);	
-	/**
-	 * @param string $path
-	 */
-	public function __construct($path=null) {
-		if ( Registry::get('caching_routes') && 
-				$parsedRoutes = Cache::instance()->fetch( MUMVC_ROUTES_CACHE_KEY)) {
-			Route::$parsedRoutes = $parsedRoutes;
+	public function __construct() {
+		if ( Registry::get('caching_routes')) {
+			if ($parsedRoutes = Cache::instance()->fetch( MUMVC_ROUTES_CACHE_KEY)) {
+				Route::$parsedRoutes = $parsedRoutes;
+			}
+			if ($patterns = Cache::instance()->fetch( MUMVC_ROUTES_PATTERNS_CACHE_KEY)) {
+				$this->routePatterns = $patterns;
+				return;
+			}
 		}
-		$this->parse($path);
+		if ($patterns = Registry::get('route:patterns')) {
+			foreach($patterns as $key => $pattern) {
+				$this->addRoute( $key, $pattern[0], $pattern[1] );
+			}
+			if (Registry::get('caching_routes')) {
+				Cache::instance()->store( MUMVC_ROUTES_PATTERNS_CACHE_KEY, $this->routePatterns);
+			}
+		}
 	}
 	public function parse($path=null) {
 		if ($path === null) {
@@ -54,13 +59,13 @@ class Route {
 			$path = substr($path, $first, ($last-$first));
 
 		$path = preg_replace('/[^a-zA-Z0-9_\/]/', '', $path);		
-
-		if (isset(Route::$parsedRoutes[$path])) {
-			return $this->currentRoute = Route::$parsedRoutes[$path];
+		
+		if (isset(self::$parsedRoutes[$path])) {
+			return $this->currentRoute = self::$parsedRoutes[$path];
 		}
 		
 		$this->currentPath = $path;
-				
+						
 		foreach($this->routePatterns as $name => $pattern) {
 			list($expression, $defaults) = $pattern;
 			if (preg_match($expression, $path, $matches)) {
@@ -78,9 +83,7 @@ class Route {
 				}
 				if (!isset($data['action'])) {
 					$data['action'] = $this->routePatterns['default'][1]['action'];
-				}
-				else {
-				}
+				}			
 				return $this->currentRoute = $data;
 			}
 		}
@@ -89,12 +92,15 @@ class Route {
 		}
 		return $this->currentRoute = $data;
 	}
+	
 	protected function getPathFromSuperGlobal() {
 		return $_SERVER['REQUEST_URI'];
 	}
+	
 	public function getDefault($string) {
 		return $this->routePatterns['default'][1][$string];
 	}
+	
 	public function persist() {
 		if (Registry::get('caching_routes') === FALSE)
 			return;
@@ -104,12 +110,25 @@ class Route {
 		* starts spamming randomly generated URLs, they all will go into
 		* my little array and possibly deny me of service.
 		*/
-		if ( count(Route::$parsedRoutes) <= MUMVC_ROUTE_REASONABLECACHESIZE) {
+		if ( count(Route::$parsedRoutes) <= MUMVC_ROUTES_CACHE_SIZE) {
 			Route::$parsedRoutes[$this->currentPath] = $this->currentRoute;
 			Cache::instance()->store( MUMVC_ROUTES_CACHE_KEY, Route::$parsedRoutes);
 		}
 	}
+	
+	public function addRoute($key, $expression, $defaults=array(), $compile=TRUE) {
+		if ($compile) {
+			$expression = $this->compileRoute($expression);
+		}
+		$this->routePatterns[$key] = array($expression, $defaults);
+	}
+	
 	public function getCurrent() {
 		return $this->currentRoute;
+	}
+
+	public function compileRoute( $string = '/:controller(/:action)*(/:id)*' ) {
+		$string = str_replace(')', '){0,1}', $string);
+		return '#' . preg_replace('/:([a-z]+)/', '(?P<\\1>[a-z0-9_]+)', $string) . '#';
 	}
 }

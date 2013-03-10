@@ -58,4 +58,16 @@ class Tests extends \PHPUnit_Framework_TestCase {
 		$qh = $model->getDriver()->getHandler();
 		$this->assertSame($qh, null); 
 	}
+	public function testRouting() {
+		$router = new Route();
+		$router->parse('/c/a/id');
+		$this->assertSame($router->getCurrent(), array('controller'=>'c', 'action'=>'a'));
+	}
+	public function testRouteCompile() {
+		$router = new Route();
+		$compiledRoute = $router->compileRoute('/:controller(/:action)(/:id)');
+		$patterns = array('default' => array( $compiledRoute, array('controller' => 'controller', 'action' => 'index') ) );
+		$router->setPatterns($patterns);
+		var_dump( $router->parse('/c/a/id') );
+	}
 }

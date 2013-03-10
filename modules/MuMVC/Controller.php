@@ -27,17 +27,18 @@ class Controller extends Root implements ICacheable {
 	}
 	public function dispatch() {
 		$route = $this->route->parse();
+
+		$controller = strtolower( str_replace('_', '\\', $route['controller']));
 		
-		if (strpos($route['controller'], '\\') === FALSE) {
-			$controller = ucfirst($route['controller']);
+		if (strpos($controller, '\\') === FALSE) {
+			$controller = ucfirst($controller);
 		}
 		else {
-			$spacesIn = explode('\\', $route['controller']);
+			$spacesIn = explode('\\', $controller);
 			$spacesOut= array();
 			foreach($spacesIn as $key => $space) { $spacesOut[] = ucfirst($space); }
 			$controller = implode('\\', $spacesOut);
 		}
-
 		try {
 			$actionControllerString = 'Application\\Controller\\' . $controller;
 			$actionController = new $actionControllerString( $route['action'] );
@@ -51,10 +52,12 @@ class Controller extends Root implements ICacheable {
 			echo $cachedContent;
 			return;
 		}
+		
 		$actionMethod = $route['action'] . 'Action';
 		if (method_exists($actionController, $actionMethod)) {
 			// Mark route as good for caching
 			$this->route->persist();
+			$this->action = $route['action'];
 			$actionController->$actionMethod();
 		}
 		else {

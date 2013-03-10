@@ -31,8 +31,7 @@ abstract class ActionController {
 	
 	protected function findTemplate($templatePath=null) {
 		if ($templatePath == null) {
-			$controllerName = $this->controller;
-			$controllerName = str_replace('\\', '/', $controllerName);
+			$controllerName = str_replace('\\', '/', $this->controller);
 			$controllerName = strtolower($controllerName);
 			$templatePath = $controllerName . '/' . $this->action . '.tpl';
 		}
@@ -56,7 +55,8 @@ abstract class ActionController {
 		}
 	}
 	public function addCrumb( $string, $link) {
-		array_push(ActionController::$crumbs, array($string, $link));		
+		ActionController::$crumbs[$string] = $link;
+		// array_push(ActionController::$crumbs, array($string, $link));		
 	}
 	public function after() {
 		if ($this->auto_render) {
@@ -81,7 +81,11 @@ abstract class ActionController {
 	public function error($code, $message='') {
 		$this->controller = 'error';
 		$this->action = 'error' . $code;
-		$this->before();
+		$this->template = new Template( $this->findTemplate());
+		if (!$this->template) {
+			die('Couldn\'t find error template.');
+		}
+		
 		if ($message) {
 			$this->template->asigna('MESSAGE', $message);
 		}
