@@ -8,7 +8,6 @@ The intent is to make a Framework for PhP5 with a very small memory footprint th
 <li>Routing mechanisms</li>
 <li>Hierarchical <b>Model-View-Controller</b> with <a href="{$THIS_LEVEL}chMVC">codependant hierarchy</a>.</li>
 <li>Cache</li>
-<li>Direct Approach</li>
 </ul>
 <h3>Missing features</h3>
 <p>Features that won't be missed.</p>

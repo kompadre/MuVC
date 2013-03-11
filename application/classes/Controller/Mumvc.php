@@ -7,6 +7,8 @@
 namespace Application\Controller;
 use \MuMVC\ActionController;
 use \Application\Model\Album;
+use \Application\Model\Contributor;
+use \Application\Model\Responsability;
 use \MuMVC\Registry;
 use \MuMVC\Template;
 
@@ -18,6 +20,30 @@ class Mumvc extends ActionController {
 		}
 		parent::before();
 	}
+	
+	public function teamAction() {
+		$c = new Contributor();
+		$t = $this->template;
+		$c->query("SELECT * FROM contributor WHERE 1");
+		while($contributor = $c->fetchAssoc()) {
+			$t->asigna($contributor);
+			$r = new Responsability();
+			$r->where('id IN (
+					SELECT responsability_id 
+					FROM contributor_responsability 
+					WHERE contributor_id = :id)', array(':id' => $c->id));
+			$resps = $r->fetchAll();
+			if (is_array($resps)) {
+				foreach($resps as $responsability) {
+					$t->asigna('responsability', $responsability['description']);
+					$t->parse('responsability');
+				}
+				$t->parse('responsabilities');
+			}
+			$t->parse('contributor');
+		}
+	}
+	
 	public function index() { echo 'ere'; }
 	public function licenceAction() {
 		echo '<pre>';

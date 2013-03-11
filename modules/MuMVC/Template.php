@@ -117,9 +117,11 @@ class Template {
 	}
 
 	function callback_blocks_content ($matches) {
-		$_out = $this->blocks[$matches[1]];
-		$this->clear($matches[1]);
-		return $_out;
+		if (isset($this->blocks[$matches[1]])) {
+			$_out = $this->blocks[$matches[1]];
+			$this->clear($matches[1]);
+			return $_out;
+		}
 	}
 }
 ?>

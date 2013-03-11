@@ -13,28 +13,28 @@ use mysql_query;
 use mysql_fetch_assoc;
 use mysql_free_result;
 
-class MysqlDriver extends Root implements IDbDriver {
-	private $connection;
+class MysqlDriver implements IDbDriver {
+	private static $connection;
 	private $qh = null;
 	private $error = '';
-	
-	static public function instance($params) {
-		return parent::instance(__CLASS__, $params);
-	}
+	private $sql = '';
 	
 	public function __construct($params) {
-		$this->connection = mysql_connect(
-				$params['server'], $params['username'], $params['password']
-		);
-		if (!$this->connection) {
-			throw new \Exception('Cannot connect to DB with username <b>' . $params['username'] . '</b>', DRIVER_ERROR);
-		}
-		if (! mysql_select_db($params['dbname'], $this->connection) ) {
-			throw new \Exception('Cannot select DB <b>' . $params['dbname'] . '</b>', DRIVER_ERROR);
+		if (!self::$connection) {
+			self::$connection = mysql_connect(
+					$params['server'], $params['username'], $params['password']
+			);
+			if (!self::$connection) {
+				throw new \Exception('Cannot connect to DB with username <b>' . $params['username'] . '</b>', DRIVER_ERROR);
+			}
+			if (! mysql_select_db($params['dbname'], self::$connection) ) {
+				throw new \Exception('Cannot select DB <b>' . $params['dbname'] . '</b>', DRIVER_ERROR);
+			}
 		}
 	}
 	public function query($query) {
-		$qh = mysql_query($query, $this->connection);
+		$this->sql = $query;
+		$qh = mysql_query($query, self::$connection);
 		$error = mysql_error();
 		if (!empty ($error)) {
 			$this->error = $error;
@@ -56,8 +56,10 @@ class MysqlDriver extends Root implements IDbDriver {
 	}
 	public function fetchAssoc() {
 		$qh = $this->qh;
-		if ($qh == null) 
-			throw new \Exception("Trying to fetch from a null handler.", DRIVER_ERROR);
+		if ($qh == null) {
+			var_dump(debug_backtrace());
+			throw new \Exception("Trying to fetch from a null handler." . $this->sql, DRIVER_ERROR);
+		}
 		
 		$row = mysql_fetch_assoc($qh);
 		if (!$row) {
@@ -66,7 +68,7 @@ class MysqlDriver extends Root implements IDbDriver {
 		return $row;
 	}
 	public function escape($string) {
-		return mysql_real_escape_string($string, $this->connection);
+		return mysql_real_escape_string($string, self::$connection);
 	}
 	public function error() {
 		return ($this->error . mysql_error());

@@ -13,7 +13,7 @@
 </ul>
 <h3>Projects</h3>
 <ul>
-<li><a href="/MuMVC/">&mu;MVC</a></li>
+<li><a href="{$path}/MuMVC/">&mu;MVC</a></li>
 <li>Bioseguretat</li>
 <li>Template</li>
 <li>Formy</li>

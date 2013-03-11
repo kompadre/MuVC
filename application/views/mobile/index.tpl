@@ -1,1 +1,1 @@
-<h1>Alexey Serikov Kompaniets</h1>
+../controller/index.tpl

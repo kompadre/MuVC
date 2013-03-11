@@ -13,6 +13,7 @@ class Mobile extends ActionController {
 	public function before() {
 		$this->layout = 'layout_mobile.tpl';
 		parent::before();
+		$this->template->asigna('path', '/mobile');
 		$this->addCrumb('Home', '/mobile/');
 	}
 	public function indexAction() {  }
