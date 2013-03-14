@@ -1,0 +1,23 @@
+<?php
+use MuMVC\Registry;
+$registry = Registry::instance();
+
+$registry->set('db:params', array(
+  'dbname' => 'alex_413x31',
+  'username'   => 'alex_413x31',
+  'password'   => 'alex_413x31',
+  'server' => 'localhost',
+));
+
+$registry->set('route:patterns', array(
+  'mobile_mumvc' => array('/mobile/MuMVC(/:action)', array(
+      'controller' => 'mobile_mumvc',
+      'action' => 'index')),
+  'mumvc' => array('/MuMVC(/:action)', array(
+      'controller' => 'mumvc',
+      'action' => 'index')),
+  'default' => array('/(:controller)(/:action)(/:id)', array(
+    // defaults
+    'controller' => 'controller',
+    'action'   => 'index'))
+));
