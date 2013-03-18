@@ -10,8 +10,9 @@ const DRIVER_ERROR = 0xF01;
 interface IDbDriver { 
 	public function query($sql);
 	public function fetchAssoc();
+	public function fetchAll();
+	public function freeResult();
 	public function escape($string);
 	public function error();
-	public function freeResult();
 	public function getHandler();
 }

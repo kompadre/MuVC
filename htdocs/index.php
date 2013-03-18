@@ -9,9 +9,6 @@ use MuMVC\Controller;
 use MuMVC\Registry;
 use MuCMS\Cms;
 
-Registry::instance()->set('caching', false);
-Registry::instance()->set('caching_routes', TRUE);	
-
 try {
 	Controller::instance()->dispatch();	
 } catch (Exception $e) {

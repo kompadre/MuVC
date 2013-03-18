@@ -1,12 +1,15 @@
 <h1>About &mu;MVC</h1>
-<p>&mu;MVC as it is at this stage is a just a bit more than an experiment. It doesn't provide an ORM or even a way to, say, PostgreSQL. 
-The intent is to make a Framework for PhP5 with a very small memory footprint that can work, say, on a cluster of <i>Raspberry Pi</i>s.
+<p>&mu;MVC is an experiment. It doesn't provide an ORM or even a way to, say, use PostgreSQL.</p>
+<p>It is only natural for a software system to die. Even the most needed, well designed and generously implemented systems become obsolete at some point (Norton Commander). Or they become bloated with complexity of unneeded components and/or requirements (Oracle). Or they starve to death from being so perfect that any development done on them would be nearing sacrilege (Perl). Or the worst death imaginable: getting stuck when keeping backward compatibility overweights actual development (GCC). Then again, sometimes it so happens that in a burst of uncontrolled development system outgrows its designed model into the wild unknown (Moodle, TYPO3).</p>
+<p>Giving birth to a system, developer has to accept that sooner or later it will die.</p> 
+<p>Attracted to this similitude between the <i>living</i> and <i>software</i> systems, I (hereby) conceive MuMVC, as an experimental organic framework. I (will try to) keep its call stack low, feed it high-fiber, thought out sentences and while keeping entropy at bay I won't overdesign it either. I hope it has a prosperous life and a glorious death within the terms of experiment.</p>
+
 <h3>Features</h3>
 <ul>
 <li>8-bit templating system</li>
 <li>Very basic DB abstraction</li>
 <li>Routing mechanisms</li>
-<li>Hierarchical <b>Model-View-Controller</b> with <a href="{$THIS_LEVEL}chMVC">codependant hierarchy</a>.</li>
+<li>Hierarchical Model-View-Controller with <a href="{$THIS_LEVEL}chMVC">codependant hierarchy</a>.</li>
 <li>Cache</li>
 </ul>
 <h3>Missing features</h3>

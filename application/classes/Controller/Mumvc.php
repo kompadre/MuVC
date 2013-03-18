@@ -28,13 +28,9 @@ class Mumvc extends ActionController {
 		while($contributor = $c->fetchAssoc()) {
 			$t->asigna($contributor);
 			$r = new Responsability();
-			$r->where('id IN (
-					SELECT responsability_id 
-					FROM contributor_responsability 
-					WHERE contributor_id = :id)', array(':id' => $c->id));
-			$resps = $r->fetchAll();
+			$resps = $r->fetchResponsabilitiesByContribId($c->id);
 			if (is_array($resps)) {
-				foreach($resps as $responsability) {
+				foreach ($resps as $responsability) {
 					$t->asigna('responsability', $responsability['description']);
 					$t->parse('responsability');
 				}

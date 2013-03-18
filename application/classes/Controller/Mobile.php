@@ -24,13 +24,11 @@ class Mobile extends ActionController {
 			$this->template->asigna('MESSAGE', $message);
 		}
 	}
-	
 	public function after() {
-		$this->getBreadcrumbs();
+		$this->showBreadcrumbs();
 		return parent::after();
 	}
-	
-	public function getBreadcrumbs() {
+	public function showBreadcrumbs() {
 		$layout = $this->layout;
 		foreach(self::$crumbs as $key => $crumb) {
 			$layout->asigna('description', $key);

@@ -1,6 +1,13 @@
 <?php
 namespace MuMVC;
 
+/**
+ * Registry::instance()->set('caching', false);
+ * Registry::instance()->caching = false;
+ * Registry::set('caching', false);
+ * $r = Registry::instance();
+ * $r->caching = false;
+ */
 class Registry extends Root implements ICacheable {
 	private static $registry = array();
 	/**

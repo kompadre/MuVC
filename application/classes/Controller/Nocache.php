@@ -9,6 +9,7 @@ use \MuMVC\ActionController;
 use \Application\Model\Album;
 use \MuMVC\Registry;
 use \MuMVC\Template;
+use \MuMVC\Cache;
 
 class Nocache extends ActionController {
 	public function indexAction() {
@@ -29,5 +30,8 @@ class Nocache extends ActionController {
 			'artist' => 'I WANT IT NOW'
 		));
 		$this->template->parse('row');
+	}
+	public function clearcacheAction() {
+		Cache::instance()->clear();
 	}
 }

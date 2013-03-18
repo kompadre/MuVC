@@ -10,4 +10,13 @@ use MuMVC\Db;
 
 class Responsability extends Db { 
 	static protected $TABLE = 'responsability';
+	public function fetchResponsabilitiesByContribId($contribId) {
+		$sql = "SELECT description 
+				FROM responsability 
+					LEFT JOIN contributor_responsability ON (responsability_id = responsability.id)
+				WHERE contributor_id = :contribId";
+		
+		$this->query($sql, array(':contribId' => $contribId));
+		return $this->fetchAll();
+	}
 }

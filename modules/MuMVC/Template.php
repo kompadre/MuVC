@@ -112,7 +112,7 @@ class Template {
 			return $this->vars[$matches[1]];
         }
         else {
-			return ("&nbsp;");
+			return ("");
 		}
 	}
 

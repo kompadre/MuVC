@@ -9,7 +9,7 @@ namespace MuMVC\Cache;
 class ApcDriver implements ICacheDriver {
 	
 	public function __construct() {
-		if (!function_exists('apc_store')) {
+		if ( !phpversion('APC') ) {
 			throw new Exception('APC is not enabled while trying to instantiate APC cache driver');
 		}
 	}
@@ -18,11 +18,19 @@ class ApcDriver implements ICacheDriver {
 		return apc_store($key, $value,$ttl);
 	}
 	
-	public function fetch($key) {
-		return apc_fetch($key);
+	public function fetch($key, &$success=null) {
+		return apc_fetch($key, $success);
 	}
 	
 	public function clear() {
-		apc_clear_cache();
+		return apc_clear_cache(TRUE);
+	}
+	public function inc($key) {
+		if (!$value = apc_fetch($key)) {
+			apc_store($key, 1);
+			return 1;
+		}
+		apc_store($key, ++$value);
+		return $value;
 	}
 }

@@ -31,7 +31,7 @@ class Route {
 				return;
 			}
 		}
-		if ($patterns = Registry::get('route:patterns')) {
+		if ($patterns = Registry::get('route_patterns')) {
 			foreach($patterns as $key => $pattern) {
 				$this->addRoute( $key, $pattern[0], $pattern[1] );
 			}

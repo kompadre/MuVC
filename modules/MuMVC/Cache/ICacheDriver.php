@@ -6,7 +6,22 @@
 namespace MuMVC\Cache;
 
 interface ICacheDriver { 
-	public function fetch($key);
+	/**
+	 * Restores a value from cache.
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function fetch($key, &$success=null);
+	/**
+	 * Stores a value into cache 
+	 * @param string $key
+	 * @param mixed $value
+	 * @param int $ttl
+	 */
 	public function store($key, $value, $ttl);
+	/**
+	 * Clears the caches
+	 * @return bool
+	 */
 	public function clear();
 }

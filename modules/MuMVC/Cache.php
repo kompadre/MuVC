@@ -1,6 +1,6 @@
 <?php
 /**
- * Implements a facade for cacheing subsystem.
+ * Implements a facade for caching subsystem.
  * 
  * @author Alexey Serikov
  */
@@ -9,15 +9,15 @@ namespace MuMVC;
 require_once MUMVC_ROOT . '/Cache/ICacheDriver.php';
 require_once MUMVC_ROOT . '/ICacheable.php';
 
+define('MUMVC_CACHE_HITS_TO_CACHE', 3);
+
 class Cache extends Root 
 {
 	/**
-	 * 
 	 * @var ICacheDriver
 	 */
 	private $driver = null;
 	/**
-	 * 
 	 * @param string $driver
 	 * @return MuMVC\Cache
 	 */
@@ -38,14 +38,21 @@ class Cache extends Root
 	public function store($key, $value, $ttl=null) {
 		return $this->driver->store($key, $value, $ttl);
 	}
-	public function fetch($key) {
-		return $this->driver->fetch($key);
+	public function storeIfHits($key, $value, $ttl=null, $hitsToStore= MUMVC_CACHE_HITS_TO_CACHE) {
+		if ($hitsToStore <= $this->fetch($key . '-hits')) {
+			$this->store($key, $value, $ttl);
+			return TRUE;
+		}
+		$this->inc($key . '-hits');
+		return FALSE;
+	}
+	public function fetch($key, &$success=null) {
+		return $this->driver->fetch($key, $success);
 	}
 	public function saveInstances() {
 		$instances = Root::getInstances();
 		$this->store('Instances', serialize($instances), 2048);
 	}
-		
 	public function loadInstances() {
 		$instances = unserialize ( $this->fetch('Instances') );
 		Root::setInstances( $instances );
@@ -58,5 +65,11 @@ class Cache extends Root
 	public function fetchContent($route) {
 		echo "Fetching " . implode('_', $route) . "<br>";
 		return $this->driver->fetch(implode('_', $route));
+	}
+	public function clear() {
+		return $this->driver->clear();
+	}
+	public function inc($key) {
+		return $this->driver->inc($key);
 	}
 }

@@ -6,19 +6,32 @@
  
 namespace MuMVC\Db;
 
-use MuMVC\Root;
-use Exception;
-use mysql_connect;
-use mysql_query;
-use mysql_fetch_assoc;
-use mysql_free_result;
+use \Exception;
+use \mysql_connect;
+use \mysql_query;
+use \mysql_fetch_assoc;
+use \mysql_free_result;
 
+/**
+ * This class provides the means to use Db with MySQL (good ol' libmysqlclient)
+ * @author Alexey S. Kompaniets
+ * 
+ */
 class MysqlDriver implements IDbDriver {
 	private static $connection;
+	/**
+	 * TODO: make this to be handled by Db so we can make Drivers singletons 
+	 * @var resource
+	 */
 	private $qh = null;
 	private $error = '';
 	private $sql = '';
-	
+	/**
+	 * $params must contain $params['user'], $params['pass'], $params['dbname']
+	 * 
+	 * @param array $params
+	 * @throws \Exception
+	 */
 	public function __construct($params) {
 		if (!self::$connection) {
 			self::$connection = mysql_connect(
@@ -66,6 +79,15 @@ class MysqlDriver implements IDbDriver {
 			mysql_free_result($qh);
 		}
 		return $row;
+	}
+	
+	public function fetchAll() {
+		if (!is_resource($this->qh)) {
+			return FALSE;
+		}
+		$result = array();
+		while ($row = mysql_fetch_assoc($this->qh)) { $result[] = $row; }
+		return $result;
 	}
 	public function escape($string) {
 		return mysql_real_escape_string($string, self::$connection);

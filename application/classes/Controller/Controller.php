@@ -13,9 +13,6 @@ use \MuMVC\Db;
 class Controller extends ActionController {
 	public function before() {
 		parent::before();
-		Registry::instance()->set('caching', false);
-		Registry::instance()->caching = false;
-		Registry::set('caching', false);
 	}
 	public function indexAction() {
 		try {
