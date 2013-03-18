@@ -7,7 +7,9 @@ use MuMVC\Route;
 use MuMVC\Cache;
 use MuMVC\Controller;
 use MuMVC\Registry;
-use MuCMS\Cms;
+use MuMVC\Log;
+
+Log::add('Starting UP', Log::SEVERITY_NOTICE);
 
 try {
 	Controller::instance()->dispatch();	
@@ -20,6 +22,8 @@ if (! (Controller::instance()->getController() instanceof \Application\Controlle
 	echo '<div class="footer">';
 		 var_dump(Controller::instance()->getRoute()->getCurrent());
 	echo '<br>Executed in ' . ( microtime(true) - $mt1 ) . '<br>' .
-		 'Memory peak usage: ' . memory_get_peak_usage() .
-		 '</div>';
+		 'Memory peak usage: ' . memory_get_peak_usage() . '<br>' .
+		 'Log messages: <br>' . Log::instance()->showMessages() . '<br>';
+		 	
+	echo '</div>';
 }
