@@ -33,16 +33,16 @@ class Log extends Root {
 	public static function add($message, $severity) {
 		$log = Log::instance();
 		switch ($severity) {
-			case SEVERITY_CRITICAL:				
+			case $this->SEVERITY_CRITICAL:				
 				$severity = 'Critical: ';
 				break;
-			case SEVERITY_ERROR:
+			case $this->SEVERITY_ERROR:
 				$severity = 'Error: ';
 				break;	
-			case SEVERITY_WARNING: 
+			case $this->SEVERITY_WARNING: 
 				$severity = 'Warning: ';
 				break;
-			case SEVERITY_NOTICE:
+			case $this->SEVERITY_NOTICE:
 			default: 
 				$severity = 'Notice: ';
 				break;
