@@ -27,7 +27,7 @@ class Log extends Root {
 		$this->fd = fopen( Registry::get('log_file'), 'w');
 		$this->adminEmail = Registry::get('admin_email');
 	}
-	public function instance() {
+	public static function instance() {
 		return parent::instance(__CLASS__);
 	}
 	public static function add($message, $severity) {
@@ -46,7 +46,6 @@ class Log extends Root {
 			default: 
 				$severity = 'Notice: ';
 				break;
-				
 		}
 		$message = '[' . date('d/h/Y H:i') . '] ' . $severity . ' ' . $message . "\n";
 	}
