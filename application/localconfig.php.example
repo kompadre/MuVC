@@ -1,0 +1,9 @@
+<?php
+Registry::instance()->production = TRUE;
+Registry::instance()->db_params = array(
+        'dbname' => 'alex_413x31',
+        'username'   => 'alex_413x31',
+        'password'   => 'alex_413x31',
+        'server' => 'localhost',
+);
+
