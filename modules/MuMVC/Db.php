@@ -80,7 +80,6 @@ class Db {
 		else {
 			$this->values = $result;
 		}
-		echo "Storing to cache under $cacheKey.<br>";
 		Cache::instance()->storeIfHits( $cacheKey, $this->values, null, $hitsToCache);
 		return $result;
 	}
