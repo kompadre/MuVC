@@ -28,17 +28,69 @@ class Db {
 			die();
 		}
 	}
-	public function query($query, $params=null, $cache=FALSE) {
+	public function normalizeQuery($query, $params=array(), &$cacheKey=NULL) {
 		$query = str_replace( array("\n", "\t"), array(" ", ""), $query);
+		if ($cacheKey !== NULL) {
+			if (is_array($params)) {
+				$params = implode('_', $params);
+			}
+			$cacheKey = MUMVC_DB_CACHE_KEY . '-result-' . md5( $query . $params);
+		}
+		return $query;
+	}
+	public function query($query, $params=null, $hitsToCache=3) {
+		$this->values = NULL;
+		if (0 > $hitsToCache) {
+			$query = $this->normalizeQuery($query, $params);
+			if (is_array($params) ) {
+				foreach (array_keys($params) as $key) {
+					$query = str_replace($key, "'" . $this->driver->escape( $params[$key] ) . "'", $query);
+				}
+			}
+			return $this->driver->query($query);
+		}
+		
+		// Caching a query can be a little bit tricky.
+		$cacheKey = '';
+		$query = $this->normalizeQuery($query, $params, $cacheKey);
+		$values = Cache::instance()->fetch( $cacheKey, $success);
+		if ($success) { 
+			Log::add('Query '. $cacheKey .' restored from cache.', Log::SEVERITY_NOTICE);
+			$this->values = $values;
+			switch($sizeof = sizeof($values)) {
+				case 0: 
+					return FALSE;
+				case 1:
+					return $values[0];
+				default:
+					return $sizeof;
+			}
+		}
+		
 		if (is_array($params) ) {
 			foreach (array_keys($params) as $key) {
 				$query = str_replace($key, "'" . $this->driver->escape( $params[$key] ) . "'", $query);
 			}
 		}
-		return $this->driver->query($query);
+		$result = $this->driver->query($query);
+		
+		if (is_integer($result)) { 
+			$this->values = $this->fetchAll();
+		}
+		else {
+			$this->values = $result;
+		}
+		echo "Storing to cache under $cacheKey.<br>";
+		Cache::instance()->storeIfHits( $cacheKey, $this->values, null, $hitsToCache);
+		return $result;
 	}
 	public function fetchAssoc() {
-		$row = $this->driver->fetchAssoc();
+		if ($this->values !== NULL) {
+			$row = array_shift($this->values);
+		}
+		else {
+			$row = $this->driver->fetchAssoc();
+		}
 		if (isset($row['id'])) {
 			$this->id = $row['id'];
 		}
@@ -54,6 +106,8 @@ class Db {
 		return $this->driver;
 	}
 	public function fetchAll() {
+		if ($this->values)
+			return $this->values;
 		return $this->driver->fetchAll();
 	}
 	public function selecting($selecting) {
@@ -82,22 +136,11 @@ class Db {
 		$limit = $this->limit ? $this->limit : 0xFFFF;
 		
 		$sql = "SELECT $selecting FROM $table WHERE $where LIMIT $limit";
-		if (Registry::get('caching_db')) {
-			$success = NULL;
-			$result = Cache::instance()->fetch( MUMVC_DB_CACHE_KEY . '-results-' . md5($sql), $success);
-			if ($success) {
-				return $result;
-			}
-		}
 		if ($q = $this->query($sql)) {
-			$result = array();
-			while ($row = $this->fetchAssoc()) { $result[] = $row; }
+			$result = $this->fetchAll();
 		}
 		else {
 			$result = FALSE;
-		}
-		if (Registry::get('caching_db')) {
-			Cache::instance()->storeIfHits(MUMVC_DB_CACHE_KEY . '-results-' . md5($sql), $result, 300, 3);
 		}
 		return $result;
 	}

@@ -30,4 +30,7 @@ class Controller extends ActionController {
 				echo "There was an error while executing some query.";
 		}
 	}
+	public function error() {
+		die('ere');
+	}
 }

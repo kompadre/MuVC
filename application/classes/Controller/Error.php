@@ -4,10 +4,9 @@
  * Full copyright and license information can be found in the file license.txt or 
    at http://alex.413x31.com/Projects/MuMVC/licence.txt */
 
-namespace Application\Model;
+namespace Application\Controller;
+use MuMVC\ActionController;
 
-use MuMVC\Db;
+class Error extends ActionController { 
 
-class Album extends Db { 
-	const TABLE = 'album';
 }

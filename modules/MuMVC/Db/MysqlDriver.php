@@ -6,7 +6,7 @@
  
 namespace MuMVC\Db;
 
-use \Exception;
+use MuMVC\Exception;
 use \mysql_connect;
 use \mysql_query;
 use \mysql_fetch_assoc;
@@ -70,8 +70,7 @@ class MysqlDriver implements IDbDriver {
 	public function fetchAssoc() {
 		$qh = $this->qh;
 		if ($qh == null) {
-			var_dump(debug_backtrace());
-			throw new \Exception("Trying to fetch from a null handler." . $this->sql, DRIVER_ERROR);
+			throw new Exception("Trying to fetch from a null handler." . $this->sql, DRIVER_ERROR);
 		}
 		
 		$row = mysql_fetch_assoc($qh);

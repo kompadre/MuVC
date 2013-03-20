@@ -10,7 +10,7 @@ class ApcDriver implements ICacheDriver {
 	
 	public function __construct() {
 		if ( !phpversion('APC') ) {
-			throw new Exception('APC is not enabled while trying to instantiate APC cache driver');
+			throw new \Exception('APC is not enabled while trying to instantiate APC cache driver');
 		}
 	}
 	

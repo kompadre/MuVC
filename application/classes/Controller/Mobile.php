@@ -8,11 +8,15 @@ namespace Application\Controller;
 
 use MuMVC\ActionController;
 use MuMVC\Registry;
+use MuMVC\Template;
 
 class Mobile extends ActionController {
 	public function before() {
 		$this->layout = 'layout_mobile.tpl';
 		parent::before();
+		if (!is_object($this->template)) {
+			$this->template = new Template('error/error404.tpl');
+		}
 		$this->template->asigna('path', '/mobile');
 		$this->addCrumb('Home', '/mobile/');
 	}

@@ -14,7 +14,6 @@ use \MuMVC\Template;
 
 class Mumvc extends ActionController {
 	public function before() {
-		Registry::instance()->caching = FALSE;
 		if ($this->action == 'licence') {
 			$this->auto_render = FALSE;
 		}
@@ -40,7 +39,8 @@ class Mumvc extends ActionController {
 		}
 	}
 	
-	public function index() { echo 'ere'; }
+	public function indexAction() { }
+	
 	public function licenceAction() {
 		echo '<pre>';
 		$fh = fopen( APP_PATH . '/../licence.txt', 'r' );

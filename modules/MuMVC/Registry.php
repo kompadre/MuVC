@@ -47,6 +47,9 @@ class Registry extends Root implements ICacheable {
 		else
 			return isset(self::$registry[$key]) ? self::$registry[$key] : null;
 	}
+	public function getRegistry() {
+		return self::$registry;
+	}
 	public function cacheSave() {
 		return self::$registry;
 	}

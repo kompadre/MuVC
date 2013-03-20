@@ -14,6 +14,7 @@ abstract class ActionController {
 	protected $controller;
 	protected $action;
 	protected $template;
+	protected $templatePath = null;
 	protected $layout;
 	protected $params;
 	protected $auto_render = TRUE;
@@ -29,14 +30,35 @@ abstract class ActionController {
 		$this->params = $params;
 	}
 	
-	protected function findTemplate($templatePath=null) {
-		if ($templatePath == null) {
+	protected function findTemplate() {
+		if (is_string($this->templatePath)) {
+			$templatePath = $this->templatePath . '/' . $this->action . '.tpl';
+			if (file_exists(APP_VIEW . '/' . $templatePath)) {
+				return $templatePath;
+			}
+		} 
+		else if (is_array($this->templatePath)) {
+			foreach($this->templatePath as $templatePath) {
+				$templatePath = $templatePath . '/' . $this->action . '.tpl';
+				if (file_exists(APP_VIEW . '/' . $templatePath)) {
+					return $templatePath;
+				}
+			}
+		} 
+		else {		
 			$controllerName = str_replace('\\', '/', $this->controller);
 			$controllerName = strtolower($controllerName);
 			$templatePath = $controllerName . '/' . $this->action . '.tpl';
-		}
-		if (file_exists(APP_VIEW . '/' . $templatePath)) {
-			return $templatePath;
+			if (file_exists(APP_VIEW . '/' . $templatePath)) {
+				return $templatePath;
+			}
+			while (strrpos($controllerName, '/') !== FALSE) {
+				$controllerName = substr($controllerName, 0, strrpos($controllerName, '/'));
+				$templatePath = $controllerName . '/' . $this->action . '.tpl';
+				if (file_exists(APP_VIEW . '/' . $templatePath)) {
+					return $templatePath;
+				}
+			}
 		}
 		return FALSE;
 	}
@@ -85,7 +107,6 @@ abstract class ActionController {
 		if (!$this->template) {
 			die('Couldn\'t find error template.');
 		}
-		
 		if ($message) {
 			$this->template->asigna('MESSAGE', $message);
 		}

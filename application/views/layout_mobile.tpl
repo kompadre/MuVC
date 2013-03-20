@@ -25,7 +25,6 @@
     </ul>
     </div>
     <div data-role="content">
-  {$ROUTE_DEBUG}
 	{$CONTENT}
 	<ul data-role="listview" data-inset="true" data-divider-theme="b">
 	</ul>

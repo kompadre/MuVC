@@ -3,11 +3,12 @@
  * Copyright (c) 2013 MuMVC Team (http://alex.413x31.com/Projects/MuMVC/Team)
  * Full copyright and license information can be found in the file license.txt or 
    at http://alex.413x31.com/Projects/MuMVC/licence.txt */
+ 
+namespace MuMVC;
 
-namespace Application\Model;
-
-use MuMVC\Db;
-
-class Album extends Db { 
-	const TABLE = 'album';
+class Exception extends \Exception {
+	public function __construct($message, $code) {
+		Registry::instance()->debug_backtrace = debug_backtrace();
+		parent::__construct($message, $code);
+	}
 }

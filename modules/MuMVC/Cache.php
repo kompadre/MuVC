@@ -24,20 +24,41 @@ class Cache extends Root
 	public static function instance($driver='apc') {
 		return parent::instance(__CLASS__, $driver);
 	}
-	
+	/**
+	 * Makes a cache storage that will use $driver. By default it's APC driver.
+	 * @param string $driver
+	 */
 	protected function __construct($driver) {
 		$driver = __NAMESPACE__ . '\\Cache\\' . ucfirst($driver) . 'Driver';
 		try {
 			$this->driver = new $driver();
-		}	
-		catch (Exception $e) {
-			echo "Couldn't load the driver.";	
+		} catch (\Exception $e) {
+			Log::add("Cache problem: {$e->getMessage()}, falling back to Cache\\NullDriver", Log::SEVERITY_NOTICE);
+			// fallback to NullDriver
+			Registry::set('caching', FALSE);
+			$this->driver = new Cache\NullDriver();
 		}
 	}
-
+	/**
+	 * Stores something into cache and locks it with your $key. Lasts $ttl.
+	 * 
+	 * @param string $key
+	 * @param mixed $value
+	 * @param int $ttl
+	 */
 	public function store($key, $value, $ttl=null) {
 		return $this->driver->store($key, $value, $ttl);
 	}
+	/**
+	 * Stores into cache something if it is "popular" enough. Has to be something big:
+	 * there's an int being stored only to see if it's worth storing or not.
+	 * 
+	 * @param string $key
+	 * @param mixed $value
+	 * @param int $ttl
+	 * @param int $hitsToStore
+	 * @return boolean
+	 */
 	public function storeIfHits($key, $value, $ttl=null, $hitsToStore= MUMVC_CACHE_HITS_TO_CACHE) {
 		if ($hitsToStore <= $this->fetch($key . '-hits')) {
 			$this->store($key, $value, $ttl);
@@ -46,6 +67,11 @@ class Cache extends Root
 		$this->inc($key . '-hits');
 		return FALSE;
 	}
+	/**
+	 * Fetches something from cache using $key and returns it. Sets $success to TRUE if succeeds. 
+	 * @param unknown $key
+	 * @param string $success
+	 */
 	public function fetch($key, &$success=null) {
 		return $this->driver->fetch($key, $success);
 	}
@@ -59,11 +85,9 @@ class Cache extends Root
 		Controller::instance()->helloWorld();
 	}
 	public function saveContent($route, $content, $ttl=null) {
-		echo "Saving " . implode('_', $route) . "<br>";
 		return $this->driver->store(implode('_', $route), $content, $ttl);
 	}
 	public function fetchContent($route) {
-		echo "Fetching " . implode('_', $route) . "<br>";
 		return $this->driver->fetch(implode('_', $route));
 	}
 	public function clear() {

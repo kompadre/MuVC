@@ -10,6 +10,9 @@ class Controller extends Root implements ICacheable {
 	public static function instance() {
 		return parent::instance(__CLASS__);
 	}
+	/**
+	 * @return MuMVC\ActionController
+	 */
 	public function getController() {
 		return $this->controller;
 	}
@@ -27,7 +30,6 @@ class Controller extends Root implements ICacheable {
 	}
 	public function dispatch() {
 		$route = $this->route->parse();
-
 		$controller = strtolower( str_replace('_', '\\', $route['controller']));
 		
 		if (strpos($controller, '\\') === FALSE) {
@@ -39,6 +41,7 @@ class Controller extends Root implements ICacheable {
 			foreach($spacesIn as $key => $space) { $spacesOut[] = ucfirst($space); }
 			$controller = implode('\\', $spacesOut);
 		}
+		
 		try {
 			$actionControllerString = 'Application\\Controller\\' . $controller;
 			$actionController = new $actionControllerString( $route['action'] );
@@ -46,11 +49,18 @@ class Controller extends Root implements ICacheable {
 			$actionDefaultControllerString = 'Application\\Controller\\' . ucfirst($this->route->getDefault('controller'));
 			$actionController = new $actionDefaultControllerString();
 		}
+		
 		$this->controller = $actionController;
 		$actionController->before();
-		if (Registry::get('caching') && ($cachedContent = Cache::instance()->fetchContent($route)) ) {
-			echo $cachedContent;
-			return;
+
+		if (Registry::get('caching')) {
+			$cacheKey = MUMVC_CACHE_KEY_PREFFIX . '-controllerContent-' . implode('_', $route);
+			$cachedContent = Cache::instance()->fetch($cacheKey, $success);
+			if ($success) {			
+				Log::add('Returning cached content from ' . $cacheKey, Log::SEVERITY_NOTICE);
+				echo $cachedContent;
+				return;
+			}
 		}
 		
 		$actionMethod = $route['action'] . 'Action';
@@ -65,8 +75,9 @@ class Controller extends Root implements ICacheable {
 		}
 		
 		$content = $actionController->after();
-		if (Registry::instance()->get('caching')) {			
-			Cache::instance()->saveContent($route, $content);
+		
+		if (Registry::get('caching')) {
+			Cache::instance()->storeIfHits($cacheKey, $content, null, 3);
 		}
 		echo $content;
 	}
