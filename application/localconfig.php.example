@@ -1,9 +1,10 @@
 <?php
-Registry::instance()->production = TRUE;
+Registry::instance()->production = FALSE;
 Registry::instance()->db_params = array(
-        'dbname' => 'alex_413x31',
-        'username'   => 'alex_413x31',
-        'password'   => 'alex_413x31',
-        'server' => 'localhost',
+	'driver' => 'mysql',
+  'dbname' => 'zf2',
+  'username'   => 'zf2',
+  'password'   => 'zf2',
+  'server' => 'localhost',
 );
 
